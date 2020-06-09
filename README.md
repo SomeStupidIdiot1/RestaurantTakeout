@@ -1,3 +1,3 @@
-# Restaurant Takeout
+# Restaurant Simulator
 
-Simulating an online order for a restaurant.
+Simulating online restaurant takeout, and other info about a restaurant.
