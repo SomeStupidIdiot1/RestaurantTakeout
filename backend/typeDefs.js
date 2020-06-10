@@ -22,6 +22,10 @@ const typeDefs = gql`
   type Token {
     value: String!
   }
+  type Query {
+    allItems(costBelow: Float, nameIncludes: String): [Item]
+    me: User
+  }
   type Mutation {
     addItem(name: String!, cost: Float!, description: String): Item
     editItem(
@@ -31,12 +35,18 @@ const typeDefs = gql`
       newDescription: String
     ): Item
     deleteItem(item: ID!): Item
-    createUser(email: String!, password: String!): User
+    createUser(
+      email: String!
+      password: String!
+      restaurantName: String!
+      address: String!
+      phone: String!
+      facebook: String
+      youtube: String
+      instagram: String
+      twitter: String
+    ): User
     login(email: String!, password: String!): Token
-  }
-  type Query {
-    allItems(costBelow: Float, nameIncludes: String): [Item]
-    me: User
   }
 `;
 module.exports = typeDefs;
