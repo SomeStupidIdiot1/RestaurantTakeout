@@ -14,18 +14,17 @@ const resolvers = {
     addItem: async (_, args, context) => {
       const user = context.currentUser;
       if (!user) throw new AuthenticationError("not logged in");
-      const item = new Item({ ...args });
-      return item
-        .save()
-        .then((res) => {
-          user.items = user.items.concat(res._id);
-          return user.save().then(() => res);
-        })
-        .catch((err) => {
-          throw new UserInputError(err.message, {
-            invalidArgs: args,
-          });
+      let item = new Item({ ...args });
+      try {
+        item = await item.save();
+        user.items = user.items.concat(item._id);
+        await user.save();
+        return item;
+      } catch (err) {
+        throw new UserInputError(err.message, {
+          invalidArgs: args,
         });
+      }
     },
     editItem: (_, args, context) => {
       if (!context.currentUser) throw new AuthenticationError("not logged in");
