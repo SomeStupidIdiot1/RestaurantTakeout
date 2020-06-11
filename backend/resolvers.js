@@ -8,14 +8,6 @@ const saltRounds = 10;
 
 const resolvers = {
   Query: {
-    allItems: async (_, __, context) => {
-      const user = context.currentUser;
-      if (!user) throw new AuthenticationError("not logged in");
-      const populatedUser = await User.findOne({ _id: user._id }).populate(
-        "items"
-      );
-      return populatedUser.items;
-    },
     me: (_, __, context) => context.currentUser,
   },
   Mutation: {

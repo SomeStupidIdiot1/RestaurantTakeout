@@ -12,7 +12,7 @@ const typeDefs = gql`
     restaurantName: String!
     address: String!
     phone: String!
-    item: [Item!]!
+    items: [Item!]!
     id: ID!
     facebook: String
     youtube: String
@@ -23,7 +23,6 @@ const typeDefs = gql`
     value: String!
   }
   type Query {
-    allItems(costBelow: Float, nameIncludes: String): [Item]
     me: User
   }
   type Mutation {
