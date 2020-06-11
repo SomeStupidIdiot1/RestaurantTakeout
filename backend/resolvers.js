@@ -23,10 +23,9 @@ const resolvers = {
           return res;
         })
         .catch((err) => {
-          if (err)
-            throw new UserInputError(error.message, {
-              invalidArgs: args,
-            });
+          throw new UserInputError(err.message, {
+            invalidArgs: args,
+          });
         });
     },
     editItem: (_, args, context) => {
