@@ -1,5 +1,5 @@
 const { UserInputError, AuthenticationError } = require("apollo-server");
-const JWT_SECRET = process.env.JWT_SECRET;
+const { JWT_SECRET } = require("./util/config");
 const jwt = require("jsonwebtoken");
 const Item = require("./models/Item");
 const User = require("./models/User");
@@ -19,8 +19,7 @@ const resolvers = {
         .save()
         .then((res) => {
           user.items = user.items.concat(res._id);
-          user.save();
-          return res;
+          return user.save().then(() => res);
         })
         .catch((err) => {
           throw new UserInputError(err.message, {

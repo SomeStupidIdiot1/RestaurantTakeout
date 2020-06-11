@@ -1,14 +1,13 @@
-require("dotenv").config();
 const { ApolloServer } = require("apollo-server");
 const mongoose = require("mongoose");
 const typeDefs = require("./typeDefs");
 const resolvers = require("./resolvers");
 const context = require("./context");
+const { MONGODB_URI } = require("./util/config");
 
 mongoose.set("useFindAndModify", false);
 mongoose.set("useCreateIndex", true);
 
-const MONGODB_URI = process.env.MONGODB_URI;
 console.log("connecting to mongoose");
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
