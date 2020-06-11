@@ -42,6 +42,12 @@ const resolvers = {
         throw new AuthenticationError("this item does not belong to this user");
       return Item.findByIdAndDelete(args.id);
     },
+    deleteAllItems: async (_, __, context) => {
+      if (!context.currentUser) throw new AuthenticationError("not logged in");
+      const ids = context.currentUser.items.map(({ _id }) => _id);
+      await Item.deleteMany({ _id: { $in: ids } });
+      return true;
+    },
     createUser: async (_, args) => {
       const passwordHash = await bcrypt.hash(args.password, saltRounds);
       const actualArgs = { ...args };

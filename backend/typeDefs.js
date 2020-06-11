@@ -29,6 +29,7 @@ const typeDefs = gql`
     addItem(name: String!, cost: Float!, description: String): Item
     editItem(id: ID!, name: String, cost: Float, description: String): Item
     deleteItem(id: ID!): Item
+    deleteAllItems: Boolean
     createUser(
       email: String!
       password: String!
