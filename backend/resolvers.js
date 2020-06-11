@@ -15,19 +15,34 @@ const resolvers = {
       const user = context.currentUser;
       if (!user) throw new AuthenticationError("not logged in");
       const item = new Item({ ...args });
-      user.items = user.items.concat(item._id);
-      try {
-        await item.save();
-        await user.save();
-        return item;
-      } catch (err) {
-        throw new UserInputError(error.message, {
-          invalidArgs: args,
+      return item
+        .save()
+        .then((res) => {
+          user.items = user.items.concat(res._id);
+          user.save();
+          return res;
+        })
+        .catch((err) => {
+          if (err)
+            throw new UserInputError(error.message, {
+              invalidArgs: args,
+            });
         });
-      }
     },
-    editItem: (_, args, context) => {},
-    deleteItem: (_, args, context) => {},
+    editItem: (_, args, context) => {
+      if (!context.currentUser) throw new AuthenticationError("not logged in");
+      if (!context.currentUser.items.find((val) => String(val._id) === args.id))
+        throw new AuthenticationError("this item does not belong to this user");
+      const newArgs = { name: args.name, cost: args.cost };
+      if (args.description) newArgs.description = args.description;
+      return Item.findByIdAndUpdate(args.id, newArgs);
+    },
+    deleteItem: (_, args, context) => {
+      if (!context.currentUser) throw new AuthenticationError("not logged in");
+      if (!context.currentUser.items.find((val) => String(val._id) === args.id))
+        throw new AuthenticationError("this item does not belong to this user");
+      return Item.findByIdAndDelete(args.id);
+    },
     createUser: async (_, args) => {
       const passwordHash = await bcrypt.hash(args.password, saltRounds);
       const actualArgs = { ...args };
