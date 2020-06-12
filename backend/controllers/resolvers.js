@@ -19,7 +19,7 @@ const resolvers = {
         item = await item.save();
         await User.findOneAndUpdate(
           { _id: user._id },
-          { $push: { items: item_id } }
+          { $push: { items: item._id } }
         );
         return item;
       } catch (err) {
