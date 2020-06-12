@@ -1,9 +1,9 @@
 const { ApolloServer } = require("apollo-server");
 const mongoose = require("mongoose");
-const typeDefs = require("./typeDefs");
+const typeDefs = require("../typeDefs");
 const resolvers = require("./resolvers");
 const context = require("./context");
-const { MONGODB_URI } = require("./util/config");
+const { MONGODB_URI } = require("../util/config");
 
 mongoose.set("useFindAndModify", false);
 mongoose.set("useCreateIndex", true);

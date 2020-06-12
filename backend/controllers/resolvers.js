@@ -1,8 +1,8 @@
 const { UserInputError, AuthenticationError } = require("apollo-server");
-const { JWT_SECRET } = require("./util/config");
+const { JWT_SECRET } = require("../util/config");
 const jwt = require("jsonwebtoken");
-const Item = require("./models/Item");
-const User = require("./models/User");
+const Item = require("../models/Item");
+const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
@@ -17,8 +17,10 @@ const resolvers = {
       let item = new Item({ ...args });
       try {
         item = await item.save();
-        user.items = user.items.concat(item._id);
-        await user.save();
+        await User.findOneAndUpdate(
+          { _id: user._id },
+          { $push: { items: item_id } }
+        );
         return item;
       } catch (err) {
         throw new UserInputError(err.message, {
