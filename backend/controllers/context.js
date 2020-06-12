@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
-const User = require("./models/User");
-const { JWT_SECRET } = require("./util/config");
+const User = require("../models/User");
+const { JWT_SECRET } = require("../util/config");
 const context = async ({ req }) => {
   const auth = req ? req.headers.authorization : null;
   if (auth && auth.toLowerCase().startsWith("bearer ")) {
