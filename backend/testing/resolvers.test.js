@@ -1,5 +1,9 @@
 const { createTestClient } = require("apollo-server-testing");
-const { server, mongoose } = require("../app");
+const { mongoose } = require("../app");
+const typeDefs = require("../typeDefs");
+const context = require("../controllers/context");
+const resolvers = require("../controllers/resolvers");
+const { ApolloServer } = require("apollo-server");
 const User = require("../models/User");
 const Item = require("../models/Item");
 
@@ -25,7 +29,9 @@ describe("mutations", () => {
     const firstPass = "this is a bad password";
     const secondEmail = "example1123123@gmail.com";
     const secondPass = "this is a bad password123123";
-    const { mutate } = createTestClient(server);
+    const { mutate } = createTestClient(
+      new ApolloServer({ typeDefs, resolvers, context })
+    );
     const firstUser = await mutate({
       mutation: CREATE_USER,
       variables: {
