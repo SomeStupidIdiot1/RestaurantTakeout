@@ -1,4 +1,3 @@
-const gql = require("graphql-tag");
 const { createTestClient } = require("apollo-server-testing");
 const { server, mongoose } = require("../app");
 const User = require("../models/User");
@@ -13,9 +12,6 @@ const {
   LOGIN,
 } = require("./mutations");
 const { GET_ME } = require("./queries");
-// beforeEach(() => {
-//   jest.setTimeout(10000);
-// });
 afterAll(() => {
   mongoose.connection.close();
 });
@@ -24,13 +20,17 @@ beforeEach(async () => {
   await Item.deleteMany({});
 });
 describe("mutations", () => {
-  test("logging in", async () => {
-    const { query, mutate } = createTestClient(server);
-    const res = await mutate({
+  test("normal login", async () => {
+    const firstEmail = "example@gmail.com";
+    const firstPass = "this is a bad password";
+    const secondEmail = "example1123123@gmail.com";
+    const secondPass = "this is a bad password123123";
+    const { mutate } = createTestClient(server);
+    const firstUser = await mutate({
       mutation: CREATE_USER,
       variables: {
-        email: "example@gmail.com",
-        password: "this is a bad password",
+        email: firstEmail,
+        password: firstPass,
         restaurantName: "some restaurant name here",
         address: "123 street",
         phone: "123 3211 4564",
@@ -38,6 +38,35 @@ describe("mutations", () => {
         instagram: "insta",
       },
     });
-    expect(res).toMatchSnapshot();
+    const secondUser = await mutate({
+      mutation: CREATE_USER,
+      variables: {
+        email: secondEmail,
+        password: secondPass,
+        restaurantName: "some restaurant123123 name here",
+        address: "123123 street",
+        phone: "983 3211 4564",
+        twitter: "twitter",
+        youtube: "youtube",
+      },
+    });
+    const token1 = await mutate({
+      mutation: LOGIN,
+      variables: {
+        email: firstEmail,
+        password: firstPass,
+      },
+    });
+    const token2 = await mutate({
+      mutation: LOGIN,
+      variables: {
+        email: secondEmail,
+        password: "random bad password",
+      },
+    });
+    expect(firstUser).toMatchSnapshot();
+    expect(secondUser).toMatchSnapshot();
+    expect(token1.errors).toBe(undefined);
+    expect(token2.errors).not.toBe(undefined);
   });
 });

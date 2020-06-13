@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`mutations logging in 1`] = `
+exports[`mutations normal login 1`] = `
 Object {
   "data": Object {
     "createUser": Object {
@@ -12,6 +12,30 @@ Object {
       "restaurantName": "some restaurant name here",
       "twitter": null,
       "youtube": null,
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`mutations normal login 2`] = `
+Object {
+  "data": Object {
+    "createUser": Object {
+      "address": "123123 street",
+      "email": "example1123123@gmail.com",
+      "facebook": null,
+      "instagram": null,
+      "phone": "983 3211 4564",
+      "restaurantName": "some restaurant123123 name here",
+      "twitter": "twitter",
+      "youtube": "youtube",
     },
   },
   "errors": undefined,
