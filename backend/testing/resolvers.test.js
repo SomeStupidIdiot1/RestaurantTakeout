@@ -28,16 +28,9 @@ beforeEach(async () => {
 describe("mutations", () => {
   test("normal login", async () => {
     const { mutate } = createClient();
-
-    const first = await getFirstUserExample(mutate, {
-      email: "example@gmail.com",
-      password: "this is a bad password",
-    });
-    const second = await getSecondUserExample(mutate, {
-      email: "example123@gmail.com",
-      password: "this is a bad password",
-    });
-    const badToken = await login(mutate, "example@gmail.com", "wrong password");
+    const first = await getFirstUserExample(mutate);
+    const second = await getSecondUserExample(mutate);
+    const badToken = await login(mutate, "bad@asdf.com", "wr123assword");
     expect(first.user.data).toMatchSnapshot();
     expect(second.user.data).toMatchSnapshot();
     expect(first.token.errors).not.toBeDefined();

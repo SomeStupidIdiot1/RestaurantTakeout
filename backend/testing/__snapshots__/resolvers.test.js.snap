@@ -46,7 +46,7 @@ exports[`mutations normal login 2`] = `
 Object {
   "createUser": Object {
     "address": "123 street",
-    "email": "example123@gmail.com",
+    "email": "example1123123@gmail.com",
     "facebook": "face",
     "instagram": "insta",
     "phone": "123 3211 4564",
