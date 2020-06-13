@@ -7,7 +7,6 @@ const GET_ME = gql`
       restaurantName
       address
       phone
-      id
       facebook
       youtube
       instagram
@@ -16,7 +15,6 @@ const GET_ME = gql`
         name
         description
         cost
-        id
       }
     }
   }

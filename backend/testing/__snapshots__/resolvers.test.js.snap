@@ -1,5 +1,41 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`mutations add item 1`] = `
+Object {
+  "data": Object {
+    "me": Object {
+      "address": "address",
+      "email": "someemail@gmail.com",
+      "facebook": null,
+      "instagram": null,
+      "items": Array [
+        Object {
+          "cost": 123.5,
+          "description": null,
+          "name": "somename",
+        },
+        Object {
+          "cost": 123.5123,
+          "description": "some desc",
+          "name": "somenadsfame",
+        },
+      ],
+      "phone": "123 1231 123",
+      "restaurantName": "name",
+      "twitter": null,
+      "youtube": null,
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
 exports[`mutations normal login 1`] = `
 Object {
   "data": Object {

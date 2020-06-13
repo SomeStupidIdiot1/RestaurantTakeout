@@ -41,7 +41,6 @@ describe("mutations", () => {
       "adsf@gmail.com",
       "wradsfong password"
     );
-    console.log(first.token);
     expect(first.user).toMatchSnapshot();
     expect(second.user).toMatchSnapshot();
     expect(first.token.errors).not.toBeDefined();
@@ -50,15 +49,39 @@ describe("mutations", () => {
     expect(badToken2.errors).toBeDefined();
   });
   test("add item", async () => {
-    const { query, mutate } = createClient();
-    const { token } = await getFirstUserExample(mutate);
+    let user = new User({
+      email: "someemail@gmail.com",
+      restaurantName: "name",
+      address: "address",
+      phone: "123 1231 123",
+      passwordHash: "adssadff",
+      items: [],
+    });
+    user = await user.save();
+    const { query, mutate } = createClient(async () => {
+      const currentUser = await User.findById(user._id).populate("items");
+      return {
+        currentUser,
+      };
+    });
     await mutate({
       mutation: ADD_ITEM,
       variables: {
-        email,
-        password,
+        name: "somename",
+        cost: 123.5,
       },
-      
     });
+    await mutate({
+      mutation: ADD_ITEM,
+      variables: {
+        name: "somenadsfame",
+        cost: 123.5123,
+        description: "some desc",
+      },
+    });
+    const getMe = await query({
+      query: GET_ME,
+    });
+    expect(getMe).toMatchSnapshot();
   });
 });
