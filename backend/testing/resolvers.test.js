@@ -72,7 +72,7 @@ describe("mutations", () => {
     });
     expect(firstUser).toMatchSnapshot();
     expect(secondUser).toMatchSnapshot();
-    expect(token1.errors).toBe(undefined);
-    expect(token2.errors).not.toBe(undefined);
+    expect(token1.errors).not.toBeDefined();
+    expect(token2.errors).toBeDefined();
   });
 });
