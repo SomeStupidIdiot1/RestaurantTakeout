@@ -36,17 +36,11 @@ describe("mutations", () => {
       password: "this is a bad password",
     });
     const badToken = await login(mutate, "example@gmail.com", "wrong password");
-    const badToken2 = await login(
-      mutate,
-      "adsf@gmail.com",
-      "wradsfong password"
-    );
-    expect(first.user).toMatchSnapshot();
-    expect(second.user).toMatchSnapshot();
+    expect(first.user.data).toMatchSnapshot();
+    expect(second.user.data).toMatchSnapshot();
     expect(first.token.errors).not.toBeDefined();
     expect(second.token.errors).not.toBeDefined();
     expect(badToken.errors).toBeDefined();
-    expect(badToken2.errors).toBeDefined();
   });
   test("add item", async () => {
     let user = new User({
@@ -82,6 +76,6 @@ describe("mutations", () => {
     const getMe = await query({
       query: GET_ME,
     });
-    expect(getMe).toMatchSnapshot();
+    expect(getMe.data).toMatchSnapshot();
   });
 });
