@@ -1,12 +1,7 @@
-const { createTestClient } = require("apollo-server-testing");
 const { mongoose } = require("../app");
-const typeDefs = require("../typeDefs");
-const context = require("../controllers/context");
-const resolvers = require("../controllers/resolvers");
-const { ApolloServer } = require("apollo-server");
+const { createClient } = require("./common/util");
 const User = require("../models/User");
 const Item = require("../models/Item");
-
 const {
   ADD_ITEM,
   EDIT_ITEM,
@@ -14,8 +9,13 @@ const {
   DELETE_ALL_ITEMS,
   CREATE_USER,
   LOGIN,
-} = require("./mutations");
-const { GET_ME } = require("./queries");
+} = require("./common/mutations");
+const { GET_ME } = require("./common/queries");
+const {
+  getFirstUserExample,
+  getSecondUserExample,
+  login,
+} = require("./common/userAndLogin");
 afterAll(() => {
   mongoose.connection.close();
 });
@@ -25,54 +25,40 @@ beforeEach(async () => {
 });
 describe("mutations", () => {
   test("normal login", async () => {
-    const firstEmail = "example@gmail.com";
-    const firstPass = "this is a bad password";
-    const secondEmail = "example1123123@gmail.com";
-    const secondPass = "this is a bad password123123";
-    const { mutate } = createTestClient(
-      new ApolloServer({ typeDefs, resolvers, context })
+    const { mutate } = createClient();
+
+    const first = await getFirstUserExample(mutate, {
+      email: "example@gmail.com",
+      password: "this is a bad password",
+    });
+    const second = await getSecondUserExample(mutate, {
+      email: "example123@gmail.com",
+      password: "this is a bad password",
+    });
+    const badToken = await login(mutate, "example@gmail.com", "wrong password");
+    const badToken2 = await login(
+      mutate,
+      "adsf@gmail.com",
+      "wradsfong password"
     );
-    const firstUser = await mutate({
-      mutation: CREATE_USER,
+    console.log(first.token);
+    expect(first.user).toMatchSnapshot();
+    expect(second.user).toMatchSnapshot();
+    expect(first.token.errors).not.toBeDefined();
+    expect(second.token.errors).not.toBeDefined();
+    expect(badToken.errors).toBeDefined();
+    expect(badToken2.errors).toBeDefined();
+  });
+  test("add item", async () => {
+    const { query, mutate } = createClient();
+    const { token } = await getFirstUserExample(mutate);
+    await mutate({
+      mutation: ADD_ITEM,
       variables: {
-        email: firstEmail,
-        password: firstPass,
-        restaurantName: "some restaurant name here",
-        address: "123 street",
-        phone: "123 3211 4564",
-        facebook: "face",
-        instagram: "insta",
+        email,
+        password,
       },
+      
     });
-    const secondUser = await mutate({
-      mutation: CREATE_USER,
-      variables: {
-        email: secondEmail,
-        password: secondPass,
-        restaurantName: "some restaurant123123 name here",
-        address: "123123 street",
-        phone: "983 3211 4564",
-        twitter: "twitter",
-        youtube: "youtube",
-      },
-    });
-    const token1 = await mutate({
-      mutation: LOGIN,
-      variables: {
-        email: firstEmail,
-        password: firstPass,
-      },
-    });
-    const token2 = await mutate({
-      mutation: LOGIN,
-      variables: {
-        email: secondEmail,
-        password: "random bad password",
-      },
-    });
-    expect(firstUser).toMatchSnapshot();
-    expect(secondUser).toMatchSnapshot();
-    expect(token1.errors).not.toBeDefined();
-    expect(token2.errors).toBeDefined();
   });
 });

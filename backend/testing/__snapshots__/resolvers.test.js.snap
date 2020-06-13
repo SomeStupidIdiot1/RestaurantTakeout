@@ -28,14 +28,14 @@ exports[`mutations normal login 2`] = `
 Object {
   "data": Object {
     "createUser": Object {
-      "address": "123123 street",
-      "email": "example1123123@gmail.com",
-      "facebook": null,
-      "instagram": null,
-      "phone": "983 3211 4564",
-      "restaurantName": "some restaurant123123 name here",
-      "twitter": "twitter",
-      "youtube": "youtube",
+      "address": "123 street",
+      "email": "example123@gmail.com",
+      "facebook": "face",
+      "instagram": "insta",
+      "phone": "123 3211 4564",
+      "restaurantName": "some restaurant name here",
+      "twitter": null,
+      "youtube": null,
     },
   },
   "errors": undefined,
