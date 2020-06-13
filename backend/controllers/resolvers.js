@@ -32,8 +32,8 @@ const resolvers = {
       if (!context.currentUser) throw new AuthenticationError("not logged in");
       if (!context.currentUser.items.find((val) => String(val._id) === args.id))
         throw new AuthenticationError("this item does not belong to this user");
-      const newArgs = { name: args.name, cost: args.cost };
-      if (args.description) newArgs.description = args.description;
+      const newArgs = { ...args };
+      delete newArgs.id;
       return Item.findByIdAndUpdate(args.id, newArgs);
     },
     deleteItem: (_, args, context) => {
