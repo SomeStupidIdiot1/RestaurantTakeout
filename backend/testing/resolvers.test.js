@@ -7,8 +7,6 @@ const {
   EDIT_ITEM,
   DELETE_ITEM,
   DELETE_ALL_ITEMS,
-  CREATE_USER,
-  LOGIN,
 } = require("./common/mutations");
 const { GET_ME } = require("./common/queries");
 const {
@@ -16,6 +14,10 @@ const {
   getSecondUserExample,
   login,
 } = require("./common/userAndLogin");
+const {
+  getFirstItemExample,
+  getSecondItemExample,
+} = require("./common/addItem");
 afterAll(() => {
   mongoose.connection.close();
 });
@@ -44,21 +46,8 @@ describe("mutations", () => {
   });
   test("add item", async () => {
     const { query, mutate } = await createClientWithUserContext();
-    await mutate({
-      mutation: ADD_ITEM,
-      variables: {
-        name: "somename",
-        cost: 123.5,
-      },
-    });
-    await mutate({
-      mutation: ADD_ITEM,
-      variables: {
-        name: "somenadsfame",
-        cost: 123.5123,
-        description: "some desc",
-      },
-    });
+    await getFirstItemExample(mutate);
+    await getSecondItemExample(mutate);
     const getMe = await query({
       query: GET_ME,
     });
