@@ -1,16 +1,22 @@
 const gql = require("graphql-tag");
 
-const GET_LAUNCH = gql`
-  query launch($id: ID!) {
-    launch(id: $id) {
+const GET_ME = gql`
+  query me() {
+    me() {
+      email
+      restaurantName
+      address
+      phone
       id
-      isBooked
-      rocket {
-        type
-      }
-      mission {
+      facebook
+      youtube
+      instagram
+      twitter
+      items {
         name
+        description
+        cost
+        id 
       }
-    }
   }
 `;
