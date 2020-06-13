@@ -1,5 +1,5 @@
 const { mongoose } = require("../app");
-const { createClient } = require("./common/util");
+const { createClient, createClientWithUserContext } = require("./common/util");
 const User = require("../models/User");
 const Item = require("../models/Item");
 const {
@@ -43,21 +43,7 @@ describe("mutations", () => {
     expect(badToken.errors).toBeDefined();
   });
   test("add item", async () => {
-    let user = new User({
-      email: "someemail@gmail.com",
-      restaurantName: "name",
-      address: "address",
-      phone: "123 1231 123",
-      passwordHash: "adssadff",
-      items: [],
-    });
-    user = await user.save();
-    const { query, mutate } = createClient(async () => {
-      const currentUser = await User.findById(user._id).populate("items");
-      return {
-        currentUser,
-      };
-    });
+    const { query, mutate } = await createClientWithUserContext();
     await mutate({
       mutation: ADD_ITEM,
       variables: {
