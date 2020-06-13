@@ -1,8 +1,8 @@
 const gql = require("graphql-tag");
 
 const GET_ME = gql`
-  query me() {
-    me() {
+  query me {
+    me {
       email
       restaurantName
       address
@@ -16,7 +16,9 @@ const GET_ME = gql`
         name
         description
         cost
-        id 
+        id
       }
+    }
   }
 `;
+module.exports = { GET_ME };

@@ -1,15 +1,43 @@
 const gql = require("graphql-tag");
-const { ApolloServer } = require("apollo-server");
-const typeDefs = require("../typeDefs");
-const resolvers = require("../resolvers");
-const context = require("../context");
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context,
-});
-const { query, mutate } = createTestClient(server);
+const { createTestClient } = require("apollo-server-testing");
+const { server, mongoose } = require("../app");
+const User = require("../models/User");
+const Item = require("../models/Item");
 
-test("test", () => {
-  expect("tkaer").toBe("tkaer");
+const {
+  ADD_ITEM,
+  EDIT_ITEM,
+  DELETE_ITEM,
+  DELETE_ALL_ITEMS,
+  CREATE_USER,
+  LOGIN,
+} = require("./mutations");
+const { GET_ME } = require("./queries");
+// beforeEach(() => {
+//   jest.setTimeout(10000);
+// });
+afterAll(() => {
+  mongoose.connection.close();
+});
+beforeEach(async () => {
+  await User.deleteMany({});
+  await Item.deleteMany({});
+});
+describe("mutations", () => {
+  test("logging in", async () => {
+    const { query, mutate } = createTestClient(server);
+    const res = await mutate({
+      mutation: CREATE_USER,
+      variables: {
+        email: "example@gmail.com",
+        password: "this is a bad password",
+        restaurantName: "some restaurant name here",
+        address: "123 street",
+        phone: "123 3211 4564",
+        facebook: "face",
+        instagram: "insta",
+      },
+    });
+    expect(res).toMatchSnapshot();
+  });
 });

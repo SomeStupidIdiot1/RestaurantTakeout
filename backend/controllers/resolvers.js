@@ -34,6 +34,9 @@ const resolvers = {
         throw new AuthenticationError("this item does not belong to this user");
       const newArgs = { ...args };
       delete newArgs.id;
+      beforeEach(() => {
+        jest.setTimeout(10000);
+      });
       return Item.findByIdAndUpdate(args.id, newArgs);
     },
     deleteItem: (_, args, context) => {

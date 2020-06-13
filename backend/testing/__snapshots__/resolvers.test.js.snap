@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mutations logging in 1`] = `
+Object {
+  "data": Object {
+    "createUser": Object {
+      "address": "123 street",
+      "email": "example@gmail.com",
+      "facebook": "face",
+      "instagram": "insta",
+      "phone": "123 3211 4564",
+      "restaurantName": "some restaurant name here",
+      "twitter": null,
+      "youtube": null,
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
