@@ -42,6 +42,7 @@ const typeDefs = gql`
       twitter: String
     ): User
     login(email: String!, password: String!): Token
+    deleteUser: User
   }
 `;
 module.exports = typeDefs;

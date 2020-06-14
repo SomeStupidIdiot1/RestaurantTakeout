@@ -80,6 +80,25 @@ const LOGIN = gql`
     }
   }
 `;
+const DELETE_USER = gql`
+  mutation deleteUser {
+    deleteUser {
+      email
+      restaurantName
+      address
+      phone
+      facebook
+      youtube
+      instagram
+      twitter
+      items {
+        name
+        description
+        cost
+      }
+    }
+  }
+`;
 module.exports = {
   ADD_ITEM,
   EDIT_ITEM,
@@ -87,4 +106,5 @@ module.exports = {
   DELETE_ALL_ITEMS,
   CREATE_USER,
   LOGIN,
+  DELETE_USER,
 };

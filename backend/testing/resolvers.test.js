@@ -14,6 +14,8 @@ const {
 } = require("./common/addItem");
 const { editItem } = require("./common/editItem");
 const { deleteItem, deleteAllItems } = require("./common/deleteItem");
+const { deleteUser } = require("./common/deleteUser");
+
 afterAll(() => {
   mongoose.connection.close();
 });
@@ -80,5 +82,13 @@ describe("mutations", () => {
     await getSecondItemExample(mutate);
     await deleteAllItems(mutate);
     expect(await Item.find({})).toHaveLength(0);
+  });
+  test("delete user", async () => {
+    const { mutate } = await createClientWithUserContext();
+    await getFirstItemExample(mutate);
+    const { data } = await deleteUser(mutate);
+    expect(data).toMatchSnapshot();
+    expect(await Item.find({})).toHaveLength(0);
+    expect(await User.find({})).toHaveLength(0);
   });
 });

@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const Item = require("../models/Item");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const context = require("./context");
 const saltRounds = 10;
 
 const resolvers = {
@@ -34,9 +35,6 @@ const resolvers = {
         throw new AuthenticationError("this item does not belong to this user");
       const newArgs = { ...args };
       delete newArgs.id;
-      beforeEach(() => {
-        jest.setTimeout(10000);
-      });
       return Item.findByIdAndUpdate(args.id, newArgs);
     },
     deleteItem: async (_, args, context) => {
@@ -72,6 +70,15 @@ const resolvers = {
         id: user._id,
       };
       return { value: jwt.sign(userForToken, JWT_SECRET) };
+    },
+    deleteUser: async (_, __, context) => {
+      if (!context.currentUser) throw new AuthenticationError("not logged in");
+      const ids = context.currentUser.items.map(({ _id }) => _id);
+      const user = await User.findByIdAndDelete({
+        _id: context.currentUser.id,
+      }).populate("items");
+      await Item.deleteMany({ _id: { $in: ids } });
+      return user;
     },
   },
 };
