@@ -2,12 +2,7 @@ const { mongoose } = require("../app");
 const { createClient, createClientWithUserContext } = require("./common/util");
 const User = require("../models/User");
 const Item = require("../models/Item");
-const {
-  ADD_ITEM,
-  EDIT_ITEM,
-  DELETE_ITEM,
-  DELETE_ALL_ITEMS,
-} = require("./common/mutations");
+const { DELETE_ITEM, DELETE_ALL_ITEMS } = require("./common/mutations");
 const { GET_ME } = require("./common/queries");
 const {
   getFirstUserExample,
@@ -18,6 +13,7 @@ const {
   getFirstItemExample,
   getSecondItemExample,
 } = require("./common/addItem");
+const { editItem } = require("./common/editItem");
 afterAll(() => {
   mongoose.connection.close();
 });
@@ -41,9 +37,35 @@ describe("mutations", () => {
     const { query, mutate } = await createClientWithUserContext();
     await getFirstItemExample(mutate);
     await getSecondItemExample(mutate);
-    const getMe = await query({
+    const { data } = await query({
       query: GET_ME,
     });
-    expect(getMe.data).toMatchSnapshot();
+    expect(data).toMatchSnapshot();
+  });
+  test("edit item", async () => {
+    const { query, mutate } = await createClientWithUserContext();
+    const id = (await getFirstItemExample(mutate)).data.addItem.id;
+    let { data } = await query({
+      query: GET_ME,
+    });
+    expect(data).toMatchSnapshot();
+    await editItem(mutate, id, {
+      name: "Adf",
+      cost: 12.2,
+      description: "adszcbv",
+    });
+    data = (
+      await query({
+        query: GET_ME,
+      })
+    ).data;
+    expect(data).toMatchSnapshot();
+    await editItem(mutate, id);
+    data = (
+      await query({
+        query: GET_ME,
+      })
+    ).data;
+    expect(data).toMatchSnapshot();
   });
 });

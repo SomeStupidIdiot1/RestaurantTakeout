@@ -27,6 +27,72 @@ Object {
 }
 `;
 
+exports[`mutations edit item 1`] = `
+Object {
+  "me": Object {
+    "address": "address",
+    "email": "someemail@gmail.com",
+    "facebook": null,
+    "instagram": null,
+    "items": Array [
+      Object {
+        "cost": 123.5,
+        "description": null,
+        "name": "somename",
+      },
+    ],
+    "phone": "123 1231 123",
+    "restaurantName": "name",
+    "twitter": null,
+    "youtube": null,
+  },
+}
+`;
+
+exports[`mutations edit item 2`] = `
+Object {
+  "me": Object {
+    "address": "address",
+    "email": "someemail@gmail.com",
+    "facebook": null,
+    "instagram": null,
+    "items": Array [
+      Object {
+        "cost": 12.2,
+        "description": "adszcbv",
+        "name": "Adf",
+      },
+    ],
+    "phone": "123 1231 123",
+    "restaurantName": "name",
+    "twitter": null,
+    "youtube": null,
+  },
+}
+`;
+
+exports[`mutations edit item 3`] = `
+Object {
+  "me": Object {
+    "address": "address",
+    "email": "someemail@gmail.com",
+    "facebook": null,
+    "instagram": null,
+    "items": Array [
+      Object {
+        "cost": 12.2,
+        "description": "adszcbv",
+        "name": "Adf",
+      },
+    ],
+    "phone": "123 1231 123",
+    "restaurantName": "name",
+    "twitter": null,
+    "youtube": null,
+  },
+}
+`;
+
 exports[`mutations normal login 1`] = `
 Object {
   "createUser": Object {
