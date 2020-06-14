@@ -27,6 +27,33 @@ Object {
 }
 `;
 
+exports[`mutations delete all items 1`] = `
+Object {
+  "me": Object {
+    "address": "address",
+    "email": "someemail@gmail.com",
+    "facebook": null,
+    "instagram": null,
+    "items": Array [
+      Object {
+        "cost": 123.5,
+        "description": null,
+        "name": "somename",
+      },
+      Object {
+        "cost": 123.5123,
+        "description": "some desc",
+        "name": "somenadsfame",
+      },
+    ],
+    "phone": "123 1231 123",
+    "restaurantName": "name",
+    "twitter": null,
+    "youtube": null,
+  },
+}
+`;
+
 exports[`mutations delete item 1`] = `
 Object {
   "me": Object {

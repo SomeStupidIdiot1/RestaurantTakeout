@@ -84,4 +84,11 @@ describe("mutations", () => {
     ).data;
     expect(data).toMatchSnapshot();
   });
+  test("delete all items", async () => {
+    const { mutate } = await createClientWithUserContext();
+    await getFirstItemExample(mutate);
+    await getSecondItemExample(mutate);
+    await deleteAllItems(mutate);
+    expect(await Item.find({})).toHaveLength(0);
+  });
 });
