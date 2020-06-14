@@ -39,11 +39,11 @@ const resolvers = {
       });
       return Item.findByIdAndUpdate(args.id, newArgs);
     },
-    deleteItem: (_, args, context) => {
+    deleteItem: async (_, args, context) => {
       if (!context.currentUser) throw new AuthenticationError("not logged in");
       if (!context.currentUser.items.find((val) => String(val._id) === args.id))
         throw new AuthenticationError("this item does not belong to this user");
-      return Item.findByIdAndDelete(args.id);
+      return await Item.findByIdAndDelete(args.id);
     },
     deleteAllItems: async (_, __, context) => {
       if (!context.currentUser) throw new AuthenticationError("not logged in");

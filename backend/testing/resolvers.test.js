@@ -2,7 +2,6 @@ const { mongoose } = require("../app");
 const { createClient, createClientWithUserContext } = require("./common/util");
 const User = require("../models/User");
 const Item = require("../models/Item");
-const { DELETE_ITEM, DELETE_ALL_ITEMS } = require("./common/mutations");
 const { GET_ME } = require("./common/queries");
 const {
   getFirstUserExample,
@@ -14,6 +13,7 @@ const {
   getSecondItemExample,
 } = require("./common/addItem");
 const { editItem } = require("./common/editItem");
+const { deleteItem, deleteAllItems } = require("./common/deleteItem");
 afterAll(() => {
   mongoose.connection.close();
 });
@@ -61,6 +61,22 @@ describe("mutations", () => {
     ).data;
     expect(data).toMatchSnapshot();
     await editItem(mutate, id);
+    data = (
+      await query({
+        query: GET_ME,
+      })
+    ).data;
+    expect(data).toMatchSnapshot();
+  });
+  test("delete item", async () => {
+    const { query, mutate } = await createClientWithUserContext();
+    const id = (await getFirstItemExample(mutate)).data.addItem.id;
+    let { data } = await query({
+      query: GET_ME,
+    });
+    expect(data).toMatchSnapshot();
+    const deletedData = (await deleteItem(mutate, id)).data;
+    expect(deletedData).toMatchSnapshot();
     data = (
       await query({
         query: GET_ME,

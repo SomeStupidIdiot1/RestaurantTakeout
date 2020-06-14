@@ -5,7 +5,7 @@ const editItem = async (mutate, id, customVariables = {}) => {
     id,
     ...customVariables,
   };
-  return await mutate({
+  return mutate({
     mutation: EDIT_ITEM,
     variables,
   });

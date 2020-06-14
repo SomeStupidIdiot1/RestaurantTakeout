@@ -6,7 +6,7 @@ const getFirstItemExample = async (mutate, customVariables = {}) => {
     cost: 123.5,
     ...customVariables,
   };
-  return await mutate({
+  return mutate({
     mutation: ADD_ITEM,
     variables,
   });
@@ -18,7 +18,7 @@ const getSecondItemExample = async (mutate, customVariables = {}) => {
     description: "some desc",
     ...customVariables,
   };
-  return await mutate({
+  return mutate({
     mutation: ADD_ITEM,
     variables,
   });

@@ -27,6 +27,54 @@ Object {
 }
 `;
 
+exports[`mutations delete item 1`] = `
+Object {
+  "me": Object {
+    "address": "address",
+    "email": "someemail@gmail.com",
+    "facebook": null,
+    "instagram": null,
+    "items": Array [
+      Object {
+        "cost": 123.5,
+        "description": null,
+        "name": "somename",
+      },
+    ],
+    "phone": "123 1231 123",
+    "restaurantName": "name",
+    "twitter": null,
+    "youtube": null,
+  },
+}
+`;
+
+exports[`mutations delete item 2`] = `
+Object {
+  "deleteItem": Object {
+    "cost": 123.5,
+    "description": null,
+    "name": "somename",
+  },
+}
+`;
+
+exports[`mutations delete item 3`] = `
+Object {
+  "me": Object {
+    "address": "address",
+    "email": "someemail@gmail.com",
+    "facebook": null,
+    "instagram": null,
+    "items": Array [],
+    "phone": "123 1231 123",
+    "restaurantName": "name",
+    "twitter": null,
+    "youtube": null,
+  },
+}
+`;
+
 exports[`mutations edit item 1`] = `
 Object {
   "me": Object {

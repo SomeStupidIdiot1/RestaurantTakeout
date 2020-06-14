@@ -31,7 +31,6 @@ const DELETE_ITEM = gql`
       name
       description
       cost
-      id
     }
   }
 `;
