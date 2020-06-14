@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 const Item = require("../models/Item");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const context = require("./context");
 const saltRounds = 10;
 
 const resolvers = {
