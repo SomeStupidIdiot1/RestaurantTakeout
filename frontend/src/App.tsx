@@ -1,8 +1,18 @@
 import React from "react";
-import "./App.css";
 
 function App() {
-  return <div className="App"></div>;
+  return (
+    <form>
+      <label>
+        username
+        <input />
+      </label>
+      <label>
+        password
+        <input />
+      </label>
+    </form>
+  );
 }
 
 export default App;
