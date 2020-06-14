@@ -25,8 +25,8 @@ const getSecondUserExample = async (mutate, customVariables = {}) => {
     restaurantName: "some restaurant name here",
     address: "123 street",
     phone: "123 3211 4564",
-    facebook: "face",
-    instagram: "insta",
+    youtube: "youtube",
+    twitter: "twitter",
     ...customVariables,
   };
   const user = await mutate({

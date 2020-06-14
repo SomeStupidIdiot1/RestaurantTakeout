@@ -27,56 +27,7 @@ Object {
 }
 `;
 
-exports[`mutations delete all items 1`] = `
-Object {
-  "me": Object {
-    "address": "address",
-    "email": "someemail@gmail.com",
-    "facebook": null,
-    "instagram": null,
-    "items": Array [
-      Object {
-        "cost": 123.5,
-        "description": null,
-        "name": "somename",
-      },
-      Object {
-        "cost": 123.5123,
-        "description": "some desc",
-        "name": "somenadsfame",
-      },
-    ],
-    "phone": "123 1231 123",
-    "restaurantName": "name",
-    "twitter": null,
-    "youtube": null,
-  },
-}
-`;
-
 exports[`mutations delete item 1`] = `
-Object {
-  "me": Object {
-    "address": "address",
-    "email": "someemail@gmail.com",
-    "facebook": null,
-    "instagram": null,
-    "items": Array [
-      Object {
-        "cost": 123.5,
-        "description": null,
-        "name": "somename",
-      },
-    ],
-    "phone": "123 1231 123",
-    "restaurantName": "name",
-    "twitter": null,
-    "youtube": null,
-  },
-}
-`;
-
-exports[`mutations delete item 2`] = `
 Object {
   "deleteItem": Object {
     "cost": 123.5,
@@ -86,7 +37,7 @@ Object {
 }
 `;
 
-exports[`mutations delete item 3`] = `
+exports[`mutations delete item 2`] = `
 Object {
   "me": Object {
     "address": "address",
@@ -111,28 +62,6 @@ Object {
     "instagram": null,
     "items": Array [
       Object {
-        "cost": 123.5,
-        "description": null,
-        "name": "somename",
-      },
-    ],
-    "phone": "123 1231 123",
-    "restaurantName": "name",
-    "twitter": null,
-    "youtube": null,
-  },
-}
-`;
-
-exports[`mutations edit item 2`] = `
-Object {
-  "me": Object {
-    "address": "address",
-    "email": "someemail@gmail.com",
-    "facebook": null,
-    "instagram": null,
-    "items": Array [
-      Object {
         "cost": 12.2,
         "description": "adszcbv",
         "name": "Adf",
@@ -146,7 +75,7 @@ Object {
 }
 `;
 
-exports[`mutations edit item 3`] = `
+exports[`mutations edit item 2`] = `
 Object {
   "me": Object {
     "address": "address",
@@ -188,12 +117,12 @@ Object {
   "createUser": Object {
     "address": "123 street",
     "email": "example1123123@gmail.com",
-    "facebook": "face",
-    "instagram": "insta",
+    "facebook": null,
+    "instagram": null,
     "phone": "123 3211 4564",
     "restaurantName": "some restaurant name here",
-    "twitter": null,
-    "youtube": null,
+    "twitter": "twitter",
+    "youtube": "youtube",
   },
 }
 `;

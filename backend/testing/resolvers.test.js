@@ -45,16 +45,12 @@ describe("mutations", () => {
   test("edit item", async () => {
     const { query, mutate } = await createClientWithUserContext();
     const id = (await getFirstItemExample(mutate)).data.addItem.id;
-    let { data } = await query({
-      query: GET_ME,
-    });
-    expect(data).toMatchSnapshot();
     await editItem(mutate, id, {
       name: "Adf",
       cost: 12.2,
       description: "adszcbv",
     });
-    data = (
+    let data = (
       await query({
         query: GET_ME,
       })
@@ -71,17 +67,11 @@ describe("mutations", () => {
   test("delete item", async () => {
     const { query, mutate } = await createClientWithUserContext();
     const id = (await getFirstItemExample(mutate)).data.addItem.id;
-    let { data } = await query({
-      query: GET_ME,
-    });
-    expect(data).toMatchSnapshot();
     const deletedData = (await deleteItem(mutate, id)).data;
     expect(deletedData).toMatchSnapshot();
-    data = (
-      await query({
-        query: GET_ME,
-      })
-    ).data;
+    const { data } = await query({
+      query: GET_ME,
+    });
     expect(data).toMatchSnapshot();
   });
   test("delete all items", async () => {
