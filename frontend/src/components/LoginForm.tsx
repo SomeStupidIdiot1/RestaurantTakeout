@@ -1,7 +1,7 @@
 import React from "react";
 
-function App() {
+function LoginForm() {
   return <div></div>;
 }
 
-export default App;
+export default LoginForm;
