@@ -1,19 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Button,
   CssBaseline,
   TextField,
-  FormControlLabel,
   Link,
   Grid,
-  Checkbox,
   Box,
   Typography,
   Container,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
+import { stringify } from "querystring";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,7 +36,24 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RegisterForm() {
   const classes = useStyles();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [restaurant, setRestaurant] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [youtube, setYoutube] = useState("");
+  const [twitter, setTwitter] = useState("");
+  const [facebook, setFacebook] = useState("");
 
+  const onSubmit = (event: React.SyntheticEvent<EventTarget>): void => {
+    event.preventDefault();
+  };
+  const onChangePassword = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const value = event.target.value;
+  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -48,16 +64,21 @@ export default function RegisterForm() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={onSubmit}>
           <Grid container spacing={1}>
-            <Grid item xs={12} sm={6}></Grid>
             <Grid item xs={12}>
+              <Typography component="h2" variant="subtitle1">
+                Account Information (required)
+              </Typography>
+
               <TextField
                 variant="outlined"
                 required
                 fullWidth
                 label="Email Address"
                 autoFocus
+                type="email"
+                onChange={({ target }) => setEmail(target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -67,6 +88,7 @@ export default function RegisterForm() {
                 fullWidth
                 label="Password"
                 type="password"
+                onChange={onChangePassword}
               />
             </Grid>
             <Grid item xs={12}>
@@ -75,22 +97,64 @@ export default function RegisterForm() {
                 required
                 fullWidth
                 label="Restaurant Name"
+                onChange={({ target }) => setRestaurant(target.value)}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <br />
+              <Typography component="h2" variant="subtitle1">
+                Contact Information
+              </Typography>
+              <TextField
+                variant="outlined"
+                fullWidth
+                label="Restaurant Address"
+                onChange={({ target }) => setAddress(target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
-                required
                 fullWidth
-                label="Restaurant Address"
+                label="Phone Number"
+                onChange={({ target }) => setPhone(target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <br />
+              <Typography component="h2" variant="subtitle1">
+                Social Media
+              </Typography>
+              <TextField
+                variant="outlined"
+                fullWidth
+                label="Instagram Link"
+                onChange={({ target }) => setInstagram(target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
-                required
                 fullWidth
-                label="Restaurant Address"
+                label="Twitter Link"
+                onChange={({ target }) => setTwitter(target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                fullWidth
+                label="Facebook Link"
+                onChange={({ target }) => setFacebook(target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                fullWidth
+                label="Youtube Link"
+                onChange={({ target }) => setYoutube(target.value)}
               />
             </Grid>
           </Grid>
