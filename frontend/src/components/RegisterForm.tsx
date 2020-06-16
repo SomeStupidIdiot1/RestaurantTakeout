@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
-
 export default function RegisterForm() {
   const classes = useStyles();
   const [email, setEmail] = useState("");
@@ -46,14 +45,24 @@ export default function RegisterForm() {
   const [youtube, setYoutube] = useState("");
   const [twitter, setTwitter] = useState("");
   const [facebook, setFacebook] = useState("");
+  const [error, setError] = useState([]);
   const [register] = useMutation(CREATE_USER, {
     onError: (error) => {
-      console.log(error.graphQLErrors[0].message);
+      console.log(error.graphQLErrors[0]);
       // setError(error.graphQLErrors[0].message);
+      // "User validation failed: email: Error, expected `email` to be unique. Value: `asdf@gmail.com`"
     },
   });
   const onSubmit = (event: React.SyntheticEvent<EventTarget>): void => {
     event.preventDefault();
+    const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; //eslint-disable-line
+    const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+    let possibleErrors: string[] = [];
+    if (!email.match(EMAIL_REGEX))
+      possibleErrors = possibleErrors.concat("The email is invalid.");
+    if (!password.match(PASSWORD_REGEX))
+      possibleErrors = possibleErrors.concat("The password is invalid.");
+
     register({
       variables: {
         email,
@@ -68,13 +77,6 @@ export default function RegisterForm() {
       },
     });
   };
-  const onChangePassword = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const value = event.target.value;
-    // Needs some validation here
-    setPassword(value);
-  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -85,7 +87,7 @@ export default function RegisterForm() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} onSubmit={onSubmit}>
+        <form className={classes.form} onSubmit={onSubmit} noValidate>
           <Grid container spacing={1}>
             <Grid item xs={12}>
               <Typography component="h2" variant="subtitle1">
@@ -109,7 +111,7 @@ export default function RegisterForm() {
                 fullWidth
                 label="Password"
                 type="password"
-                onChange={onChangePassword}
+                onChange={({ target }) => setPassword(target.value)}
               />
             </Grid>
             <Grid item xs={12}>
