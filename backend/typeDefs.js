@@ -34,8 +34,8 @@ const typeDefs = gql`
       email: String!
       password: String!
       restaurantName: String!
-      address: String!
-      phone: String!
+      address: String
+      phone: String
       facebook: String
       youtube: String
       instagram: String
