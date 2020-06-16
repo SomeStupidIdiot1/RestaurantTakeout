@@ -4,20 +4,13 @@ import App from "./App";
 
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
-import { setContext } from "apollo-link-context";
 
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem("user-token");
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `bearer ${token}` : null,
-    },
-  };
-});
-// cache: new InMemoryCache(),
+const token = localStorage.getItem("user-logged-in-token");
 const client = new ApolloClient({
   uri: "http://localhost:4000",
+  headers: {
+    authorization: token ? `bearer ${token}` : null,
+  },
 });
 
 ReactDOM.render(
