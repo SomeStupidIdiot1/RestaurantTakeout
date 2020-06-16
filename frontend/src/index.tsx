@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 
-import { ApolloClient, HttpLink, InMemoryCache } from "apollo-boost";
+import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { setContext } from "apollo-link-context";
 
@@ -15,11 +15,9 @@ const authLink = setContext((_, { headers }) => {
     },
   };
 });
-const httpLink = new HttpLink({ uri: "http://localhost:4000" });
-
+// cache: new InMemoryCache(),
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: authLink.concat(httpLink),
+  uri: "http://localhost:4000",
 });
 
 ReactDOM.render(

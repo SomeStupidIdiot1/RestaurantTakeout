@@ -12,7 +12,8 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
-import { stringify } from "querystring";
+import { useMutation } from "@apollo/react-hooks";
+import { CREATE_USER } from "../mutations";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,21 +39,41 @@ export default function RegisterForm() {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [restaurant, setRestaurant] = useState("");
+  const [restaurantName, setRestaurantName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [instagram, setInstagram] = useState("");
   const [youtube, setYoutube] = useState("");
   const [twitter, setTwitter] = useState("");
   const [facebook, setFacebook] = useState("");
-
+  const [register] = useMutation(CREATE_USER, {
+    onError: (error) => {
+      console.log(error.graphQLErrors[0].message);
+      // setError(error.graphQLErrors[0].message);
+    },
+  });
   const onSubmit = (event: React.SyntheticEvent<EventTarget>): void => {
     event.preventDefault();
+    register({
+      variables: {
+        email,
+        password,
+        restaurantName,
+        address,
+        phone,
+        facebook,
+        youtube,
+        instagram,
+        twitter,
+      },
+    });
   };
   const onChangePassword = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     const value = event.target.value;
+    // Needs some validation here
+    setPassword(value);
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -97,7 +118,7 @@ export default function RegisterForm() {
                 required
                 fullWidth
                 label="Restaurant Name"
-                onChange={({ target }) => setRestaurant(target.value)}
+                onChange={({ target }) => setRestaurantName(target.value)}
               />
             </Grid>
 
