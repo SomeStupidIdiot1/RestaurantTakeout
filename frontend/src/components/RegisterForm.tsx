@@ -36,47 +36,61 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function RegisterForm() {
   const classes = useStyles();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [restaurantName, setRestaurantName] = useState("");
-  const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
-  const [instagram, setInstagram] = useState("");
-  const [youtube, setYoutube] = useState("");
-  const [twitter, setTwitter] = useState("");
-  const [facebook, setFacebook] = useState("");
-  const [error, setError] = useState([]);
+  const [registerInfo, setRegisterInfo] = useState({
+    email: "",
+    password: "",
+    restaurantName: "",
+    address: "",
+    phone: "",
+    instagram: "",
+    youtube: "",
+    twitter: "",
+    facebook: "",
+  });
+  const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+  const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; //eslint-disable-line
+
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [focused, setFocused] = useState("");
+  const [error, setError] = useState("");
   const [register] = useMutation(CREATE_USER, {
     onError: (error) => {
-      console.log(error.graphQLErrors[0]);
-      // setError(error.graphQLErrors[0].message);
-      // "User validation failed: email: Error, expected `email` to be unique. Value: `asdf@gmail.com`"
+      const msg = error.graphQLErrors[0].message;
+      if (
+        msg.startsWith(
+          "User validation failed: email: Error, expected `email` to be unique"
+        )
+      )
+        setError("Email was already registered.");
+      else setError(msg);
+      console.log(msg);
     },
   });
   const onSubmit = (event: React.SyntheticEvent<EventTarget>): void => {
     event.preventDefault();
-    const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; //eslint-disable-line
-    const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-    let possibleErrors: string[] = [];
-    if (!email.match(EMAIL_REGEX))
-      possibleErrors = possibleErrors.concat("The email is invalid.");
-    if (!password.match(PASSWORD_REGEX))
-      possibleErrors = possibleErrors.concat("The password is invalid.");
 
     register({
-      variables: {
-        email,
-        password,
-        restaurantName,
-        address,
-        phone,
-        facebook,
-        youtube,
-        instagram,
-        twitter,
-      },
+      variables: registerInfo,
     });
   };
+  const emailHelperText =
+    !registerInfo.email.match(EMAIL_REGEX) &&
+    focused !== "email" &&
+    registerInfo.email !== ""
+      ? "This email is invalid"
+      : "";
+  const passwordHelperText =
+    !registerInfo.password.match(PASSWORD_REGEX) &&
+    focused !== "password" &&
+    registerInfo.password !== ""
+      ? "Must have..."
+      : "";
+  const confirmPasswordHelperText =
+    confirmPassword !== registerInfo.password &&
+    focused !== "Confirm password" &&
+    confirmPassword !== ""
+      ? "This does not match the password."
+      : "";
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -101,7 +115,13 @@ export default function RegisterForm() {
                 label="Email Address"
                 autoFocus
                 type="email"
-                onChange={({ target }) => setEmail(target.value)}
+                onChange={({ target }) =>
+                  setRegisterInfo({ ...registerInfo, email: target.value })
+                }
+                helperText={emailHelperText}
+                onFocus={() => setFocused("email")}
+                onBlur={() => setFocused("")}
+                error={!!emailHelperText && focused !== "email"}
               />
             </Grid>
             <Grid item xs={12}>
@@ -111,7 +131,29 @@ export default function RegisterForm() {
                 fullWidth
                 label="Password"
                 type="password"
-                onChange={({ target }) => setPassword(target.value)}
+                onChange={({ target }) =>
+                  setRegisterInfo({ ...registerInfo, password: target.value })
+                }
+                helperText={passwordHelperText}
+                onFocus={() => setFocused("password")}
+                onBlur={() => setFocused("")}
+                error={!!passwordHelperText && focused !== "password"}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                label="Confirm password"
+                type="password"
+                onChange={({ target }) => setConfirmPassword(target.value)}
+                helperText={confirmPasswordHelperText}
+                onFocus={() => setFocused("Confirm password")}
+                onBlur={() => setFocused("")}
+                error={
+                  !!confirmPasswordHelperText && focused !== "Confirm password"
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -120,7 +162,12 @@ export default function RegisterForm() {
                 required
                 fullWidth
                 label="Restaurant Name"
-                onChange={({ target }) => setRestaurantName(target.value)}
+                onChange={({ target }) =>
+                  setRegisterInfo({
+                    ...registerInfo,
+                    restaurantName: target.value,
+                  })
+                }
               />
             </Grid>
 
@@ -133,7 +180,9 @@ export default function RegisterForm() {
                 variant="outlined"
                 fullWidth
                 label="Restaurant Address"
-                onChange={({ target }) => setAddress(target.value)}
+                onChange={({ target }) =>
+                  setRegisterInfo({ ...registerInfo, address: target.value })
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -141,7 +190,9 @@ export default function RegisterForm() {
                 variant="outlined"
                 fullWidth
                 label="Phone Number"
-                onChange={({ target }) => setPhone(target.value)}
+                onChange={({ target }) =>
+                  setRegisterInfo({ ...registerInfo, phone: target.value })
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -153,7 +204,9 @@ export default function RegisterForm() {
                 variant="outlined"
                 fullWidth
                 label="Instagram Link"
-                onChange={({ target }) => setInstagram(target.value)}
+                onChange={({ target }) =>
+                  setRegisterInfo({ ...registerInfo, instagram: target.value })
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -161,7 +214,9 @@ export default function RegisterForm() {
                 variant="outlined"
                 fullWidth
                 label="Twitter Link"
-                onChange={({ target }) => setTwitter(target.value)}
+                onChange={({ target }) =>
+                  setRegisterInfo({ ...registerInfo, twitter: target.value })
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -169,7 +224,9 @@ export default function RegisterForm() {
                 variant="outlined"
                 fullWidth
                 label="Facebook Link"
-                onChange={({ target }) => setFacebook(target.value)}
+                onChange={({ target }) =>
+                  setRegisterInfo({ ...registerInfo, facebook: target.value })
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -177,7 +234,9 @@ export default function RegisterForm() {
                 variant="outlined"
                 fullWidth
                 label="Youtube Link"
-                onChange={({ target }) => setYoutube(target.value)}
+                onChange={({ target }) =>
+                  setRegisterInfo({ ...registerInfo, youtube: target.value })
+                }
               />
             </Grid>
           </Grid>
