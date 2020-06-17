@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Button,
@@ -13,6 +13,9 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
+import { useMutation } from "@apollo/react-hooks";
+import { LOGIN } from "../mutations";
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,7 +39,24 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LoginForm() {
   const classes = useStyles();
+  const onSubmit = (event: React.SyntheticEvent<EventTarget>) => {};
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [response, setResponse] = useState("");
 
+  const [login] = useMutation(LOGIN, {
+    onError: (error) => {
+      const msg = error.graphQLErrors[0].message;
+      if (
+        msg.startsWith(
+          "User validation failed: email: Error, expected `email` to be unique"
+        )
+      )
+        setResponse("Email was already registered.");
+      else setResponse(msg);
+      console.log(msg);
+    },
+  });
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -47,15 +67,16 @@ export default function LoginForm() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={onSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            id="email"
             label="Email Address"
             name="email"
+            value="email"
+            onChange={({ target }) => setEmail(target.value)}
             autoComplete="email"
             autoFocus
           />
@@ -67,7 +88,8 @@ export default function LoginForm() {
             name="password"
             label="Password"
             type="password"
-            id="password"
+            value="password"
+            onChange={({ target }) => setPassword(target.value)}
             autoComplete="current-password"
           />
           <FormControlLabel
