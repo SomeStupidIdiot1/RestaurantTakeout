@@ -192,6 +192,7 @@ export default function RegisterForm() {
                 onFocus={() => setFocused("email")}
                 onBlur={() => setFocused("")}
                 error={!!emailHelperText && focused !== "email"}
+                autoComplete="email"
               />
             </Grid>
             <Grid item xs={12}>
@@ -273,6 +274,7 @@ export default function RegisterForm() {
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, address: target.value })
                 }
+                autoComplete="address"
               />
             </Grid>
             <Grid item xs={12}>
@@ -284,6 +286,7 @@ export default function RegisterForm() {
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, phone: target.value })
                 }
+                autoComplete="phone"
               />
             </Grid>
             <Grid item xs={12}>
@@ -299,6 +302,7 @@ export default function RegisterForm() {
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, instagram: target.value })
                 }
+                autoComplete="instagram"
               />
             </Grid>
             <Grid item xs={12}>
@@ -310,6 +314,7 @@ export default function RegisterForm() {
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, twitter: target.value })
                 }
+                autoComplete="twitter"
               />
             </Grid>
             <Grid item xs={12}>
@@ -321,6 +326,7 @@ export default function RegisterForm() {
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, facebook: target.value })
                 }
+                autoComplete="facebook"
               />
             </Grid>
             <Grid item xs={12}>
@@ -332,6 +338,7 @@ export default function RegisterForm() {
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, youtube: target.value })
                 }
+                autoComplete="youtube"
               />
             </Grid>
           </Grid>
