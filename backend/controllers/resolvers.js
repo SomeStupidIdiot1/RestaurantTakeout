@@ -49,6 +49,8 @@ const resolvers = {
       return true;
     },
     createUser: async (_, args) => {
+      if (await User.findOne({ email: args.email }))
+        throw new UserInputError("email is not unique");
       const passwordHash = await bcrypt.hash(args.password, saltRounds);
       const actualArgs = { ...args };
       delete actualArgs.password;
@@ -65,7 +67,6 @@ const resolvers = {
         throw new UserInputError("wrong credentials");
       }
       if (!user) throw new UserInputError("no such user exists");
-
       const userForToken = {
         email: user.email,
         id: user._id,
