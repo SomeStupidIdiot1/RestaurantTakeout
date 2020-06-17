@@ -10,7 +10,9 @@ import {
   Grid,
   Typography,
   Container,
+  Snackbar,
 } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/react-hooks";
@@ -38,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LoginForm() {
   const classes = useStyles();
-  const onSubmit = (event: React.SyntheticEvent<EventTarget>) => {};
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [response, setResponse] = useState("");
@@ -47,10 +48,18 @@ export default function LoginForm() {
     onError: (error) => {
       const msg = error.graphQLErrors[0].message;
       if (msg === "wrong credentials") setResponse("Wrong credentials");
-      else setResponse(msg);
-      console.log(msg);
     },
   });
+  const onSubmit = (event: React.SyntheticEvent<EventTarget>) => {
+    event.preventDefault();
+    login({ variables: { email, password } }).then((res) => {
+      if (res) {
+        setResponse("Success");
+        setEmail("");
+        setPassword("");
+      }
+    });
+  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -68,8 +77,7 @@ export default function LoginForm() {
             required
             fullWidth
             label="Email Address"
-            name="email"
-            value="email"
+            value={email}
             onChange={({ target }) => setEmail(target.value)}
             autoComplete="email"
             autoFocus
@@ -79,10 +87,9 @@ export default function LoginForm() {
             margin="normal"
             required
             fullWidth
-            name="password"
             label="Password"
             type="password"
-            value="password"
+            value={password}
             onChange={({ target }) => setPassword(target.value)}
             autoComplete="current-password"
           />
@@ -108,6 +115,17 @@ export default function LoginForm() {
           </Grid>
         </form>
       </div>
+      <Snackbar
+        open={!!response}
+        autoHideDuration={6000}
+        onClose={() => setResponse("")}
+      >
+        {response === "Success" ? (
+          <Alert severity="success">Success!</Alert>
+        ) : (
+          <Alert severity="error">{response}</Alert>
+        )}
+      </Snackbar>
     </Container>
   );
 }

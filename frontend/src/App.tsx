@@ -1,5 +1,6 @@
 import React from "react";
-import LoginForm from "./components/RegisterForm";
+// import RegisterForm from "./components/RegisterForm";
+import LoginForm from "./components/LoginForm";
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "./styling/theme";
 

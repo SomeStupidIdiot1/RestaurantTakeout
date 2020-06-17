@@ -362,7 +362,7 @@ export default function RegisterForm() {
         onClose={() => setResponse("")}
       >
         {response === "Success" ? (
-          <Alert severity="info">Success!</Alert>
+          <Alert severity="success">Success!</Alert>
         ) : (
           <Alert severity="error">
             <AlertTitle>Error</AlertTitle>
