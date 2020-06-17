@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, ReactElement } from "react";
 import {
   Avatar,
   Button,
@@ -9,6 +9,7 @@ import {
   Box,
   Typography,
   Container,
+  Popper,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,6 +22,12 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+  },
+  popper: {
+    border: "1px solid",
+    margin: theme.spacing(1),
+    padding: theme.spacing(1),
+    backgroundColor: theme.palette.background.paper,
   },
   avatar: {
     margin: theme.spacing(1),
@@ -47,12 +54,12 @@ export default function RegisterForm() {
     twitter: "",
     facebook: "",
   });
-  const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-  const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; //eslint-disable-line
-
   const [confirmPassword, setConfirmPassword] = useState("");
   const [focused, setFocused] = useState("");
   const [error, setError] = useState("");
+  const [anchorEl, setAnchorEl]: [null | HTMLInputElement, Function] = useState(
+    null
+  );
   const [register] = useMutation(CREATE_USER, {
     onError: (error) => {
       const msg = error.graphQLErrors[0].message;
@@ -66,31 +73,76 @@ export default function RegisterForm() {
       console.log(msg);
     },
   });
-  const onSubmit = (event: React.SyntheticEvent<EventTarget>): void => {
-    event.preventDefault();
-
-    register({
-      variables: registerInfo,
-    });
-  };
+  const passwordInputRef = useRef(null);
+  const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; //eslint-disable-line
   const emailHelperText =
     !registerInfo.email.match(EMAIL_REGEX) &&
     focused !== "email" &&
     registerInfo.email !== ""
       ? "This email is invalid"
       : "";
-  const passwordHelperText =
-    !registerInfo.password.match(PASSWORD_REGEX) &&
-    focused !== "password" &&
-    registerInfo.password !== ""
-      ? "Must have..."
-      : "";
+  const getPasswordHelperText = (): ReactElement | string => {
+    let requiredParameters: ReactElement[] = [];
+    if (registerInfo.password.toLowerCase() === registerInfo.password)
+      requiredParameters = requiredParameters.concat(
+        <Typography variant="subtitle2" component="p" key="no upper case">
+          Needs an uppercase letter.
+        </Typography>
+      );
+    if (registerInfo.password.length < 8 || registerInfo.password.length > 40)
+      requiredParameters = requiredParameters.concat(
+        <Typography
+          variant="subtitle2"
+          component="p"
+          key="too short or too long"
+        >
+          Must be between 8 to 40 characters.
+        </Typography>
+      );
+    if (!registerInfo.password.match(/[#?!@$%^&*-]/))
+      requiredParameters = requiredParameters.concat(
+        <Typography variant="subtitle2" component="p" key="no symbol">
+          Contains one of the following: #?!@$%^&*-
+        </Typography>
+      );
+    if (!/\d/.test(registerInfo.password))
+      requiredParameters = requiredParameters.concat(
+        <Typography variant="subtitle2" component="p" key="no number">
+          Needs at least 1 number.
+        </Typography>
+      );
+
+    const passwordHelperText =
+      requiredParameters.length !== 0 && focused === "password" ? (
+        <div>{requiredParameters}</div>
+      ) : (
+        ""
+      );
+    return passwordHelperText;
+  };
   const confirmPasswordHelperText =
     confirmPassword !== registerInfo.password &&
     focused !== "Confirm password" &&
     confirmPassword !== ""
       ? "This does not match the password."
       : "";
+  const onSubmit = (event: React.SyntheticEvent<EventTarget>): void => {
+    event.preventDefault();
+    if (
+      emailHelperText ||
+      !registerInfo.email ||
+      getPasswordHelperText() ||
+      !registerInfo.password ||
+      confirmPasswordHelperText ||
+      !confirmPassword ||
+      !registerInfo.restaurantName
+    )
+      setError("Fix all errors and submit all required fields.");
+    else
+      register({
+        variables: registerInfo,
+      });
+  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -107,7 +159,6 @@ export default function RegisterForm() {
               <Typography component="h2" variant="subtitle1">
                 Account Information (required)
               </Typography>
-
               <TextField
                 variant="outlined"
                 required
@@ -131,15 +182,30 @@ export default function RegisterForm() {
                 fullWidth
                 label="Password"
                 type="password"
+                id=""
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, password: target.value })
                 }
-                helperText={passwordHelperText}
-                onFocus={() => setFocused("password")}
-                onBlur={() => setFocused("")}
-                error={!!passwordHelperText && focused !== "password"}
+                onFocus={() => {
+                  setFocused("password");
+                  setAnchorEl(passwordInputRef.current);
+                }}
+                onBlur={() => {
+                  setFocused("");
+                  setAnchorEl(null);
+                }}
+                error={!!getPasswordHelperText() && focused !== "password"}
+                ref={passwordInputRef}
               />
             </Grid>
+            <Popper
+              open={!!anchorEl && getPasswordHelperText()}
+              anchorEl={anchorEl}
+              placement="left"
+              className={classes.popper}
+            >
+              {getPasswordHelperText()}
+            </Popper>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
@@ -168,6 +234,7 @@ export default function RegisterForm() {
                     restaurantName: target.value,
                   })
                 }
+                onBlur={() => setFocused("")}
               />
             </Grid>
 
@@ -240,6 +307,7 @@ export default function RegisterForm() {
               />
             </Grid>
           </Grid>
+
           <Button
             type="submit"
             fullWidth
