@@ -66,7 +66,7 @@ const resolvers = {
       if (user && !(await bcrypt.compare(args.password, user.passwordHash))) {
         throw new UserInputError("wrong credentials");
       }
-      if (!user) throw new UserInputError("no such user exists");
+      if (!user) throw new UserInputError("wrong credentials");
       const userForToken = {
         email: user.email,
         id: user._id,

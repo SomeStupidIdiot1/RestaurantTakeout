@@ -16,7 +16,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/react-hooks";
 import { LOGIN } from "../mutations";
 
-
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -47,12 +46,7 @@ export default function LoginForm() {
   const [login] = useMutation(LOGIN, {
     onError: (error) => {
       const msg = error.graphQLErrors[0].message;
-      if (
-        msg.startsWith(
-          "User validation failed: email: Error, expected `email` to be unique"
-        )
-      )
-        setResponse("Email was already registered.");
+      if (msg === "wrong credentials") setResponse("Wrong credentials");
       else setResponse(msg);
       console.log(msg);
     },
