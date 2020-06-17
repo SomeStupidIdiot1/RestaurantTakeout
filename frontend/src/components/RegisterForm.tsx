@@ -6,11 +6,12 @@ import {
   TextField,
   Link,
   Grid,
-  Box,
   Typography,
   Container,
   Popper,
+  Snackbar,
 } from "@material-ui/core";
+import { Alert, AlertTitle } from "@material-ui/lab";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/react-hooks";
@@ -56,7 +57,7 @@ export default function RegisterForm() {
   });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [focused, setFocused] = useState("");
-  const [error, setError] = useState("");
+  const [response, setResponse] = useState("");
   const [anchorEl, setAnchorEl]: [null | HTMLInputElement, Function] = useState(
     null
   );
@@ -68,8 +69,8 @@ export default function RegisterForm() {
           "User validation failed: email: Error, expected `email` to be unique"
         )
       )
-        setError("Email was already registered.");
-      else setError(msg);
+        setResponse("Email was already registered.");
+      else setResponse(msg);
       console.log(msg);
     },
   });
@@ -128,19 +129,36 @@ export default function RegisterForm() {
       : "";
   const onSubmit = (event: React.SyntheticEvent<EventTarget>): void => {
     event.preventDefault();
-    if (
-      emailHelperText ||
-      !registerInfo.email ||
-      getPasswordHelperText() ||
-      !registerInfo.password ||
-      confirmPasswordHelperText ||
-      !confirmPassword ||
-      !registerInfo.restaurantName
+    if (emailHelperText || !registerInfo.email) setResponse("Invalid email");
+    else if (
+      !registerInfo.password.match(
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,40}$/
+      )
     )
-      setError("Fix all errors and submit all required fields.");
+      setResponse("Invalid password");
+    else if (registerInfo.password !== confirmPassword)
+      setResponse("Confirmation password does not match");
+    else if (!registerInfo.restaurantName)
+      setResponse("Needs a restaurant name");
     else
       register({
         variables: registerInfo,
+      }).then((res) => {
+        if (res) {
+          setResponse("Success");
+          setRegisterInfo({
+            email: "",
+            password: "",
+            restaurantName: "",
+            address: "",
+            phone: "",
+            instagram: "",
+            youtube: "",
+            twitter: "",
+            facebook: "",
+          });
+          setConfirmPassword("");
+        }
       });
   };
   return (
@@ -166,6 +184,7 @@ export default function RegisterForm() {
                 label="Email Address"
                 autoFocus
                 type="email"
+                value={registerInfo.email}
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, email: target.value })
                 }
@@ -182,6 +201,7 @@ export default function RegisterForm() {
                 fullWidth
                 label="Password"
                 type="password"
+                value={registerInfo.password}
                 id=""
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, password: target.value })
@@ -199,7 +219,7 @@ export default function RegisterForm() {
               />
             </Grid>
             <Popper
-              open={!!anchorEl && getPasswordHelperText()}
+              open={!!anchorEl && !!getPasswordHelperText()}
               anchorEl={anchorEl}
               placement="left"
               className={classes.popper}
@@ -212,6 +232,7 @@ export default function RegisterForm() {
                 required
                 fullWidth
                 label="Confirm password"
+                value={confirmPassword}
                 type="password"
                 onChange={({ target }) => setConfirmPassword(target.value)}
                 helperText={confirmPasswordHelperText}
@@ -228,6 +249,7 @@ export default function RegisterForm() {
                 required
                 fullWidth
                 label="Restaurant Name"
+                value={registerInfo.restaurantName}
                 onChange={({ target }) =>
                   setRegisterInfo({
                     ...registerInfo,
@@ -247,6 +269,7 @@ export default function RegisterForm() {
                 variant="outlined"
                 fullWidth
                 label="Restaurant Address"
+                value={registerInfo.address}
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, address: target.value })
                 }
@@ -257,6 +280,7 @@ export default function RegisterForm() {
                 variant="outlined"
                 fullWidth
                 label="Phone Number"
+                value={registerInfo.phone}
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, phone: target.value })
                 }
@@ -270,6 +294,7 @@ export default function RegisterForm() {
               <TextField
                 variant="outlined"
                 fullWidth
+                value={registerInfo.instagram}
                 label="Instagram Link"
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, instagram: target.value })
@@ -281,6 +306,7 @@ export default function RegisterForm() {
                 variant="outlined"
                 fullWidth
                 label="Twitter Link"
+                value={registerInfo.twitter}
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, twitter: target.value })
                 }
@@ -291,6 +317,7 @@ export default function RegisterForm() {
                 variant="outlined"
                 fullWidth
                 label="Facebook Link"
+                value={registerInfo.facebook}
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, facebook: target.value })
                 }
@@ -300,6 +327,7 @@ export default function RegisterForm() {
               <TextField
                 variant="outlined"
                 fullWidth
+                value={registerInfo.youtube}
                 label="Youtube Link"
                 onChange={({ target }) =>
                   setRegisterInfo({ ...registerInfo, youtube: target.value })
@@ -307,7 +335,6 @@ export default function RegisterForm() {
               />
             </Grid>
           </Grid>
-
           <Button
             type="submit"
             fullWidth
@@ -326,7 +353,20 @@ export default function RegisterForm() {
           </Grid>
         </form>
       </div>
-      <Box mt={5}></Box>
+      <Snackbar
+        open={!!response}
+        autoHideDuration={6000}
+        onClose={() => setResponse("")}
+      >
+        {response === "Success" ? (
+          <Alert severity="info">Success!</Alert>
+        ) : (
+          <Alert severity="error">
+            <AlertTitle>Error</AlertTitle>
+            {response}
+          </Alert>
+        )}
+      </Snackbar>
     </Container>
   );
 }
