@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Button,
@@ -44,12 +44,18 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [response, setResponse] = useState("");
 
-  const [login] = useMutation(LOGIN, {
+  const [login, result] = useMutation(LOGIN, {
     onError: (error) => {
       const msg = error.graphQLErrors[0].message;
       if (msg === "wrong credentials") setResponse("Wrong credentials");
     },
   });
+  useEffect(() => {
+    if (result.data) {
+      const token = result.data.login.value;
+      localStorage.setItem("user-logged-in-token", token);
+    }
+  }, [result.data]); // eslint-disable-line
   const onSubmit = (event: React.SyntheticEvent<EventTarget>) => {
     event.preventDefault();
     login({ variables: { email, password } }).then((res) => {

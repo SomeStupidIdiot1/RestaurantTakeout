@@ -6,6 +6,7 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 
 const token = localStorage.getItem("user-logged-in-token");
+
 const client = new ApolloClient({
   uri: "http://localhost:4000",
   headers: {
