@@ -17,6 +17,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/react-hooks";
 import { LOGIN } from "../mutations";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,6 +44,7 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [response, setResponse] = useState("");
+  const history = useHistory();
 
   const [login, result] = useMutation(LOGIN, {
     onError: (error) => {
@@ -64,6 +66,7 @@ export default function LoginForm() {
         setResponse("Success");
         setEmail("");
         setPassword("");
+        history.push("/dashboard");
       }
     });
   };
@@ -115,8 +118,8 @@ export default function LoginForm() {
           </Button>
           <Grid container>
             <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
+              <Link href="register" variant="body2">
+                Don't have an account? Sign Up
               </Link>
             </Grid>
           </Grid>

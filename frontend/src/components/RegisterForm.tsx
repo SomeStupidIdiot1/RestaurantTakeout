@@ -16,6 +16,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/react-hooks";
 import { CREATE_USER } from "../mutations";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function RegisterForm() {
   const classes = useStyles();
+  const history = useHistory();
   const [registerInfo, setRegisterInfo] = useState({
     email: "",
     password: "",
@@ -151,6 +153,7 @@ export default function RegisterForm() {
             facebook: "",
           });
           setConfirmPassword("");
+          history.push("/dashboard");
         }
       });
   };
@@ -346,12 +349,15 @@ export default function RegisterForm() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="login" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
           </Grid>
         </form>
+        <br />
+        <br />
+        <br />
       </div>
       <Snackbar
         open={!!response}
