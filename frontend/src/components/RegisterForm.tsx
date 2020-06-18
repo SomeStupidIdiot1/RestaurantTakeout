@@ -64,10 +64,7 @@ export default function RegisterForm() {
   const [register] = useMutation(CREATE_USER, {
     onError: (error) => {
       const msg = error.graphQLErrors[0].message;
-      if (msg === "email is not unique")
-        setResponse("Email was already registered.");
-      else setResponse(msg);
-      console.log(msg);
+      setResponse(msg);
     },
   });
   const passwordInputRef = useRef(null);

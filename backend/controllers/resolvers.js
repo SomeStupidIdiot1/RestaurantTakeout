@@ -50,7 +50,13 @@ const resolvers = {
     },
     createUser: async (_, args) => {
       if (await User.findOne({ email: args.email }))
-        throw new UserInputError("email is not unique");
+        throw new UserInputError("Email was already registered.");
+      const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; //eslint-disable-line
+      if (!args.email.match(EMAIL_REGEX))
+        throw new UserInputError("Email is invalid.");
+      const PASS_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,40}$/;
+      if (!args.password.match(PASS_REGEX))
+        throw new UserInputError("Password does not pass regex.");
       const passwordHash = await bcrypt.hash(args.password, saltRounds);
       const actualArgs = { ...args };
       delete actualArgs.password;
