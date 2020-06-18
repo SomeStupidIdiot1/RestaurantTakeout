@@ -6,6 +6,7 @@ const { GET_ME } = require("./common/queries");
 const {
   getFirstUserExample,
   getSecondUserExample,
+  getBadUserExample,
   login,
 } = require("./common/userAndLogin");
 const {
@@ -28,12 +29,14 @@ describe("mutations", () => {
     const { mutate } = createClient();
     const first = await getFirstUserExample(mutate);
     const second = await getSecondUserExample(mutate);
+    const badExample = await getBadUserExample(mutate);
     const badToken = await login(mutate, "bad@asdf.com", "wr123assword");
     expect(first.user.data).toMatchSnapshot();
     expect(second.user.data).toMatchSnapshot();
     expect(first.token.errors).not.toBeDefined();
     expect(second.token.errors).not.toBeDefined();
     expect(badToken.errors).toBeDefined();
+    expect(badExample.errors).toBeDefined();
   });
   test("add item", async () => {
     const { query, mutate } = await createClientWithUserContext();

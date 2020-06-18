@@ -3,7 +3,7 @@ const { CREATE_USER, LOGIN } = require("./mutations");
 const getFirstUserExample = async (mutate, customVariables = {}) => {
   const variables = {
     email: "example@gmail.com",
-    password: "this is a bad password",
+    password: "thispsaswordworkS1?",
     restaurantName: "some restaurant name here",
     address: "123 street",
     phone: "123 3211 4564",
@@ -21,7 +21,7 @@ const getFirstUserExample = async (mutate, customVariables = {}) => {
 const getSecondUserExample = async (mutate, customVariables = {}) => {
   const variables = {
     email: "example1123123@gmail.com",
-    password: "this is a bad password123123",
+    password: "asdfD1?thisworks",
     restaurantName: "some restaurant name here",
     address: "123 street",
     phone: "123 3211 4564",
@@ -36,6 +36,19 @@ const getSecondUserExample = async (mutate, customVariables = {}) => {
   const token = await login(mutate, variables.email, variables.password);
   return { user, token };
 };
+const getBadUserExample = async (mutate, customVariables = {}) => {
+  const variables = {
+    email: "example1123123@gmail.com",
+    password: "thisdoesnwork1?",
+    restaurantName: "some restaurant name here",
+    ...customVariables,
+  };
+  const user = await mutate({
+    mutation: CREATE_USER,
+    variables,
+  });
+  return user;
+};
 const login = async (mutate, email, password) => {
   return mutate({
     mutation: LOGIN,
@@ -45,4 +58,9 @@ const login = async (mutate, email, password) => {
     },
   });
 };
-module.exports = { getFirstUserExample, getSecondUserExample, login };
+module.exports = {
+  getFirstUserExample,
+  getSecondUserExample,
+  getBadUserExample,
+  login,
+};
