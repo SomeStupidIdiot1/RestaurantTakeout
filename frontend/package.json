@@ -23,6 +23,7 @@
     "apollo-link": "^1.2.14",
     "apollo-link-context": "^1.0.20",
     "apollo-link-http": "^1.5.17",
+    "clsx": "^1.1.1",
     "graphql": "^15.1.0",
     "graphql-tag": "^2.10.3",
     "material-ui": "^0.20.2",

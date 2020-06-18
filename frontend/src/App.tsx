@@ -1,21 +1,16 @@
 import React from "react";
 // import RegisterForm from "./components/RegisterForm";
-import LoginForm from "./components/LoginForm";
+// import LoginForm from "./components/LoginForm";
+import Dashboard from "./components/dashboard/Dashboard";
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "./styling/theme";
-import { useApolloClient } from "@apollo/react-hooks";
 
 function App() {
-  const client = useApolloClient();
 
-  const logout = () => {
-    localStorage.clear();
-    client.resetStore();
-  };
   return (
     <div>
       <ThemeProvider theme={theme}>
-        <LoginForm />
+        <Dashboard />
       </ThemeProvider>
     </div>
   );
