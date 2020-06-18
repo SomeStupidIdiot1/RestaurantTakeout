@@ -4,8 +4,6 @@ import {
   Button,
   CssBaseline,
   TextField,
-  FormControlLabel,
-  Checkbox,
   Link,
   Grid,
   Typography,
@@ -103,10 +101,7 @@ export default function LoginForm() {
             onChange={({ target }) => setPassword(target.value)}
             autoComplete="current-password"
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
+
           <Button
             type="submit"
             fullWidth
