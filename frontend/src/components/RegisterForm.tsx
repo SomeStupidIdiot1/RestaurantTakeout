@@ -52,10 +52,6 @@ export default function RegisterForm() {
     restaurantName: "",
     address: "",
     phone: "",
-    instagram: "",
-    youtube: "",
-    twitter: "",
-    facebook: "",
   });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [focused, setFocused] = useState("");
@@ -147,10 +143,6 @@ export default function RegisterForm() {
             restaurantName: "",
             address: "",
             phone: "",
-            instagram: "",
-            youtube: "",
-            twitter: "",
-            facebook: "",
           });
           setConfirmPassword("");
           history.push("/dashboard");
@@ -283,58 +275,6 @@ export default function RegisterForm() {
                   setRegisterInfo({ ...registerInfo, phone: target.value })
                 }
                 autoComplete="phone"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <br />
-              <Typography component="h2" variant="subtitle1">
-                Social Media
-              </Typography>
-              <TextField
-                variant="outlined"
-                fullWidth
-                value={registerInfo.instagram}
-                label="Instagram Link"
-                onChange={({ target }) =>
-                  setRegisterInfo({ ...registerInfo, instagram: target.value })
-                }
-                autoComplete="instagram"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                fullWidth
-                label="Twitter Link"
-                value={registerInfo.twitter}
-                onChange={({ target }) =>
-                  setRegisterInfo({ ...registerInfo, twitter: target.value })
-                }
-                autoComplete="twitter"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                fullWidth
-                label="Facebook Link"
-                value={registerInfo.facebook}
-                onChange={({ target }) =>
-                  setRegisterInfo({ ...registerInfo, facebook: target.value })
-                }
-                autoComplete="facebook"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                fullWidth
-                value={registerInfo.youtube}
-                label="Youtube Link"
-                onChange={({ target }) =>
-                  setRegisterInfo({ ...registerInfo, youtube: target.value })
-                }
-                autoComplete="youtube"
               />
             </Grid>
           </Grid>
