@@ -50,12 +50,13 @@ export default function LoginForm() {
       if (msg === "wrong credentials") setResponse("Wrong credentials");
     },
   });
+
   useEffect(() => {
     if (result.data) {
       const token = result.data.login.value;
       localStorage.setItem("user-logged-in-token", token);
     }
-  }, [result.data]); // eslint-disable-line
+  }, [result.data]);
   const onSubmit = (event: React.SyntheticEvent<EventTarget>) => {
     event.preventDefault();
     login({ variables: { email, password } }).then((res) => {

@@ -3,8 +3,15 @@ import React from "react";
 import LoginForm from "./components/LoginForm";
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "./styling/theme";
+import { useApolloClient } from "@apollo/react-hooks";
 
 function App() {
+  const client = useApolloClient();
+
+  const logout = () => {
+    localStorage.clear();
+    client.resetStore();
+  };
   return (
     <div>
       <ThemeProvider theme={theme}>
