@@ -22,6 +22,7 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import { mainListItems } from "./listItems";
 import { GET_ME } from "../../queries";
+import LoginForm from "../LoginForm";
 
 const drawerWidth = 240;
 
@@ -121,9 +122,7 @@ export default function Dashboard() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-  if (result.loading) return <div>loading</div>;
-  else if (user)
+  if (user)
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -181,5 +180,7 @@ export default function Dashboard() {
         </main>
       </div>
     );
-  return <div>need to login</div>;
+  if (!result.loading && !user) return <LoginForm />;
+
+  return <div></div>;
 }

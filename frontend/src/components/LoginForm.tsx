@@ -64,7 +64,10 @@ export default function LoginForm() {
         setResponse("Success");
         setEmail("");
         setPassword("");
-        history.push("/dashboard");
+        setTimeout(() => {
+          history.push("/dashboard");
+          window.location.reload();
+        }, 1000);
       }
     });
   };
