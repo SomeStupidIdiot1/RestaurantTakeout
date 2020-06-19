@@ -1,7 +1,7 @@
 import React from "react";
 
-function ItemForm() {
+function MenuDisplay() {
   return <div></div>;
 }
 
-export default ItemForm;
+export default MenuDisplay;

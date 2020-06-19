@@ -9,10 +9,10 @@ import {
   Grid,
   Typography,
   Container,
+  Button,
   Drawer,
   AppBar,
   Toolbar,
-  List,
   IconButton,
   Divider,
   Badge,
@@ -20,7 +20,8 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
-import { mainListItems } from "./listItems";
+import SettingsIcon from "@material-ui/icons/Settings";
+import MainListItems from "./MainListItems";
 import { GET_ME } from "../../queries";
 import LoginForm from "../LoginForm";
 
@@ -61,9 +62,6 @@ const useStyles = makeStyles((theme) => ({
   menuButtonHidden: {
     display: "none",
   },
-  title: {
-    flexGrow: 1,
-  },
   drawerPaper: {
     position: "relative",
     whiteSpace: "nowrap",
@@ -103,24 +101,24 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+  separator: {
+    flexGrow: 1,
+  },
 }));
 
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+  const [onDisplay, setOnDisplay] = React.useState("dashboard");
   const client = useApolloClient();
   const result = useQuery(GET_ME);
+
   let user = null;
   if (!result.loading) user = result.data.me;
+
   const logout = () => {
     localStorage.clear();
     client.resetStore();
-  };
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
   };
   if (user)
     return (
@@ -135,7 +133,7 @@ export default function Dashboard() {
               edge="start"
               color="inherit"
               aria-label="open drawer"
-              onClick={handleDrawerOpen}
+              onClick={() => setOpen(true)}
               className={clsx(
                 classes.menuButton,
                 open && classes.menuButtonHidden
@@ -143,13 +141,16 @@ export default function Dashboard() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              className={classes.title}
-            ></Typography>
+
+            <Button variant="outlined" color="inherit" onClick={logout}>
+              <Typography component="p" variant="h6" color="inherit">
+                <b>logout</b>
+              </Typography>
+            </Button>
+            <div className={classes.separator}></div>
+            <IconButton color="inherit">
+              <SettingsIcon />
+            </IconButton>
             <IconButton color="inherit">
               <Badge badgeContent={1} color="secondary">
                 <NotificationsIcon />
@@ -165,12 +166,12 @@ export default function Dashboard() {
           open={open}
         >
           <div className={classes.toolbarIcon}>
-            <IconButton onClick={handleDrawerClose}>
+            <IconButton onClick={() => setOpen(false)}>
               <ChevronLeftIcon />
             </IconButton>
           </div>
           <Divider />
-          <List>{mainListItems}</List>
+          <MainListItems setOnDisplay={setOnDisplay} />
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
