@@ -41,6 +41,20 @@ const typeDefs = gql`
       instagram: String
       twitter: String
     ): User
+    editUserContactInfo(
+      restaurantName: String
+      address: String
+      phone: String
+      facebook: String
+      youtube: String
+      instagram: String
+      twitter: String
+    ): User
+    editUserCredentials(
+      currPassword: String!
+      email: String
+      password: String
+    ): User
     login(email: String!, password: String!): Token
     deleteUser: User
   }

@@ -4,8 +4,9 @@ const jwt = require("jsonwebtoken");
 const Item = require("../models/Item");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const saltRounds = 10;
-
+const SALT_ROUNDS = 10;
+const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; //eslint-disable-line
+const PASS_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,40}$/;
 const resolvers = {
   Query: {
     me: (_, __, context) => context.currentUser,
@@ -51,13 +52,11 @@ const resolvers = {
     createUser: async (_, args) => {
       if (await User.findOne({ email: args.email }))
         throw new UserInputError("Email was already registered.");
-      const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; //eslint-disable-line
       if (!args.email.match(EMAIL_REGEX))
         throw new UserInputError("Email is invalid.");
-      const PASS_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,40}$/;
       if (!args.password.match(PASS_REGEX))
         throw new UserInputError("Password does not pass regex.");
-      const passwordHash = await bcrypt.hash(args.password, saltRounds);
+      const passwordHash = await bcrypt.hash(args.password, SALT_ROUNDS);
       const actualArgs = { ...args };
       delete actualArgs.password;
       const user = new User({ ...actualArgs, passwordHash, items: [] });
@@ -66,6 +65,32 @@ const resolvers = {
           invalidArgs: args,
         });
       });
+    },
+    editUserContactInfo: async (_, args, context) => {
+      if (!context.currentUser) throw new AuthenticationError("not logged in");
+      return User.findByIdAndUpdate(context.currentUser._id, args);
+    },
+    editUserCredentials: async (_, args, context) => {
+      const user = context.currentUser;
+      if (!user) throw new AuthenticationError("not logged in");
+      if (!(await bcrypt.compare(args.currPassword, user.passwordHash))) {
+        throw new UserInputError("wrong credentials");
+      }
+      const updateArgs = {};
+      if (args.email) {
+        if (await User.findOne({ email: args.email }))
+          throw new UserInputError("Email was already registered.");
+        if (!args.email.match(EMAIL_REGEX))
+          throw new UserInputError("Email is invalid.");
+        updateArgs.email = args.email;
+      }
+      if (args.password) {
+        if (!args.password.match(PASS_REGEX))
+          throw new UserInputError("Password does not pass regex.");
+        const passwordHash = await bcrypt.hash(args.password, SALT_ROUNDS);
+        updateArgs.passwordHash = passwordHash;
+      }
+      return User.findByIdAndUpdate(context.currentUser._id, updateArgs);
     },
     login: async (_, args) => {
       const user = await User.findOne({ email: args.email });
@@ -83,7 +108,7 @@ const resolvers = {
       if (!context.currentUser) throw new AuthenticationError("not logged in");
       const ids = context.currentUser.items.map(({ _id }) => _id);
       const user = await User.findByIdAndDelete({
-        _id: context.currentUser.id,
+        _id: context.currentUser._id,
       }).populate("items");
       await Item.deleteMany({ _id: { $in: ids } });
       return user;

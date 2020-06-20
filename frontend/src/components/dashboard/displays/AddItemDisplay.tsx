@@ -1,8 +1,8 @@
 import React from "react";
 
-function RestaurantInfoDisplay({ show }: {show: boolean}) {
+function AddItemDisplay({ show }: { show: boolean }) {
   if (!show) return null;
-  return <div></div>;
+  return <div>ADD ITEM DISPLAY</div>;
 }
 
-export default RestaurantInfoDisplay;
+export default AddItemDisplay;
