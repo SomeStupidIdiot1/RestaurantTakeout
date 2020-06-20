@@ -73,8 +73,10 @@ export default function RegisterForm() {
     registerInfo.email !== ""
       ? "This email is invalid"
       : "";
-  const getPasswordHelperText = (): ReactElement | string => {
-    let requiredParameters: ReactElement[] = [];
+  const getPasswordHelperText = ():
+    | React.ReactElement<typeof Typography>
+    | string => {
+    let requiredParameters: React.ReactElement<typeof Typography>[] = [];
     if (registerInfo.password.toLowerCase() === registerInfo.password)
       requiredParameters = requiredParameters.concat(
         <Typography variant="subtitle2" component="p" key="no upper case">
