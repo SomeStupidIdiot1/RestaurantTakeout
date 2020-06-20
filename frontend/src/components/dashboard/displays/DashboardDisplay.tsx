@@ -1,6 +1,8 @@
 import React from "react";
 
-function DashboardDisplay() {
+function DashboardDisplay({ show }: { show: boolean }) {
+  if (!show) return null;
+
   return <div></div>;
 }
 

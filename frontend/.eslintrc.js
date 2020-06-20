@@ -26,6 +26,7 @@ module.exports = {
     "linebreak-style": ["error", "windows"],
     quotes: ["error", "double"],
     semi: ["error", "always"],
+    "@typescript-eslint/no-explicit-any": 2,
   },
   settings: {
     react: {

@@ -6,9 +6,7 @@ import { useQuery } from "@apollo/react-hooks";
 import clsx from "clsx";
 import {
   CssBaseline,
-  Grid,
   Typography,
-  Container,
   Button,
   Drawer,
   AppBar,
@@ -24,6 +22,10 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import MainListItems from "./MainListItems";
 import { GET_ME } from "../../queries";
 import LoginForm from "../LoginForm";
+import MenuDisplay from "./displays/MenuDisplay";
+import RestaurantInfoDisplay from "./displays/RestaurantInfoDisplay";
+import AddItemDisplay from "./displays/AddItemDisplay";
+import DashboardDisplay from "./displays/DashboardDisplay";
 
 const drawerWidth = 240;
 
@@ -175,9 +177,10 @@ export default function Dashboard() {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          <Container maxWidth="lg" className={classes.container}>
-            <Grid container spacing={3}></Grid>
-          </Container>
+          <AddItemDisplay show={onDisplay === "addMenuItem"} />
+          <DashboardDisplay show={onDisplay === "dashboard"} />
+          <MenuDisplay show={onDisplay === "menu"} />
+          <RestaurantInfoDisplay show={onDisplay === "restaurantInfo"} />
         </main>
       </div>
     );
