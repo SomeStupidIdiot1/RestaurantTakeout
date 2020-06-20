@@ -16,6 +16,7 @@ const {
 const { editItem } = require("./common/editItem");
 const { deleteItem, deleteAllItems } = require("./common/deleteItem");
 const { deleteUser } = require("./common/deleteUser");
+const { editUserContact, editUserCredentials } = require("./common/editUser");
 
 afterAll(() => {
   mongoose.connection.close();
@@ -93,5 +94,16 @@ describe("mutations", () => {
     expect(data).toMatchSnapshot();
     expect(await Item.find({})).toHaveLength(0);
     expect(await User.find({})).toHaveLength(0);
+  });
+  test("edit user contact and credentials", async () => {
+    const { query, mutate } = await createClientWithUserContext();
+    const data1 = await editUserContact(mutate);
+    const data2 = await editUserCredentials(mutate);
+    expect(data1).toMatchSnapshot();
+    expect(data2).toMatchSnapshot();
+    const { data } = await query({
+      query: GET_ME,
+    });
+    expect(data).toMatchSnapshot();
   });
 });

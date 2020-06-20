@@ -99,6 +99,58 @@ const DELETE_USER = gql`
     }
   }
 `;
+const EDIT_USER_CONTACT = gql`
+  mutation editUserContactInfo(
+    $restaurantName: String
+    $address: String
+    $phone: String
+    $facebook: String
+    $youtube: String
+    $instagram: String
+    $twitter: String
+  ) {
+    editUserContactInfo(
+      restaurantName: $restaurantName
+      address: $address
+      phone: $phone
+      facebook: $facebook
+      youtube: $youtube
+      instagram: $instagram
+      twitter: $twitter
+    ) {
+      email
+      restaurantName
+      address
+      phone
+      facebook
+      youtube
+      instagram
+      twitter
+    }
+  }
+`;
+const EDIT_USER_CREDENTIALS = gql`
+  mutation editUserCredentials(
+    $currPassword: String!
+    $email: String
+    $password: String
+  ) {
+    editUserCredentials(
+      currPassword: $currPassword
+      email: $email
+      password: $password
+    ) {
+      email
+      restaurantName
+      address
+      phone
+      facebook
+      youtube
+      instagram
+      twitter
+    }
+  }
+`;
 module.exports = {
   ADD_ITEM,
   EDIT_ITEM,
@@ -107,4 +159,6 @@ module.exports = {
   CREATE_USER,
   LOGIN,
   DELETE_USER,
+  EDIT_USER_CONTACT,
+  EDIT_USER_CREDENTIALS,
 };
