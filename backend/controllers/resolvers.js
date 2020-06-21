@@ -10,6 +10,9 @@ const PASS_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,
 const resolvers = {
   Query: {
     me: (_, __, context) => context.currentUser,
+    getItems: () => {
+      return Item.find({});
+    },
   },
   Mutation: {
     addItem: async (_, args, context) => {

@@ -24,6 +24,7 @@ const typeDefs = gql`
   }
   type Query {
     me: User
+    getItems: [Item]
   }
   type Mutation {
     addItem(name: String!, cost: Float!, description: String): Item

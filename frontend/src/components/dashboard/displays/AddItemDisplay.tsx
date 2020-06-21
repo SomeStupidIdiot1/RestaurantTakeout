@@ -10,6 +10,7 @@ import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/react-hooks";
 import { ADD_ITEM } from "../../../mutations";
+import { GET_ITEMS } from "../../../queries";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,6 +25,23 @@ function AddItemDisplay({ show }: { show: boolean }) {
   const classes = useStyles();
   const [focus, setFocus] = useState<string | null>(null);
   const [addItem] = useMutation(ADD_ITEM, {
+    update: (store, response) => {
+      type dataType = {
+        getItems: Object[];
+      };
+      const dataInStore = store.readQuery<dataType>({
+        query: GET_ITEMS,
+      });
+      let items = [response.data.addItem];
+      if (dataInStore) items = items.concat(dataInStore.getItems);
+
+      store.writeQuery({
+        query: GET_ITEMS,
+        data: {
+          getItems: items,
+        },
+      });
+    },
     onError: (error) => {
       if (error.graphQLErrors.length) {
         const msg = error.graphQLErrors[0].message;
@@ -39,7 +57,9 @@ function AddItemDisplay({ show }: { show: boolean }) {
     else if (!parseFloat(cost)) setResponse("Please fix the entry for cost");
     else {
       setResponse("Success");
-      addItem({ variables: { name, cost, desc } });
+      addItem({
+        variables: { name, cost: parseFloat(cost), description: desc },
+      });
       setName("");
       setCost("");
       setDesc("");

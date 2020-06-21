@@ -1,9 +1,13 @@
 import React from "react";
+import { useQuery } from "@apollo/react-hooks";
+import { GET_ITEMS } from "../../../queries";
 
 function MenuDisplay({ show }: { show: boolean }) {
-  if (!show) return null;
+  let items = useQuery(GET_ITEMS);
+  if (!items.loading) items = items.data.getItems;
 
-  return <div>THIS SHOULD SHOW MENU</div>;
+  if (!show) return null;
+  return <div>{JSON.stringify(items)}</div>;
 }
 
 export default MenuDisplay;
