@@ -15,7 +15,7 @@ import { Alert, AlertTitle } from "@material-ui/lab";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/react-hooks";
-import { CREATE_USER } from "../mutations";
+import { CREATE_USER, LOGIN } from "../mutations";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -65,6 +65,13 @@ export default function RegisterForm() {
       }
     },
   });
+  const [login, result] = useMutation(LOGIN);
+  React.useEffect(() => {
+    if (result.data) {
+      const token = result.data.login.value;
+      localStorage.setItem("user-logged-in-token", token);
+    }
+  }, [result.data]);
   const passwordInputRef = useRef(null);
   const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; //eslint-disable-line
   const emailHelperText =
@@ -139,14 +146,26 @@ export default function RegisterForm() {
       }).then((res) => {
         if (res) {
           setResponse("Success");
-          setRegisterInfo({
-            email: "",
-            password: "",
-            restaurantName: "",
+          login({
+            variables: {
+              email: registerInfo.email,
+              password: registerInfo.password,
+            },
+          }).then((res) => {
+            if (res) {
+              setTimeout(() => {
+                history.push("/dashboard");
+                window.location.reload();
+              }, 1000);
+            }
           });
-          setConfirmPassword("");
-          history.push("/dashboard");
         }
+        setRegisterInfo({
+          email: "",
+          password: "",
+          restaurantName: "",
+        });
+        setConfirmPassword("");
       });
   };
   return (
@@ -163,7 +182,7 @@ export default function RegisterForm() {
           <Grid container spacing={1}>
             <Grid item xs={12}>
               <Typography component="h2" variant="subtitle1">
-                Account Information (required)
+                Account Information
               </Typography>
               <TextField
                 variant="outlined"
