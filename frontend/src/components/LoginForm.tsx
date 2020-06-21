@@ -90,7 +90,6 @@ export default function LoginForm() {
             label="Email Address"
             value={email}
             onChange={({ target }) => setEmail(target.value)}
-            autoComplete="email"
             autoFocus
           />
           <TextField
@@ -102,7 +101,6 @@ export default function LoginForm() {
             type="password"
             value={password}
             onChange={({ target }) => setPassword(target.value)}
-            autoComplete="current-password"
           />
 
           <Button
