@@ -46,8 +46,10 @@ export default function LoginForm() {
 
   const [login, result] = useMutation(LOGIN, {
     onError: (error) => {
-      const msg = error.graphQLErrors[0].message;
-      if (msg === "wrong credentials") setResponse("Wrong credentials");
+      if (error.graphQLErrors.length !== 0) {
+        const msg = error.graphQLErrors[0].message;
+        if (msg === "wrong credentials") setResponse("Wrong credentials");
+      }
     },
   });
 

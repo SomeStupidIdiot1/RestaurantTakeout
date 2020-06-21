@@ -50,8 +50,6 @@ export default function RegisterForm() {
     email: "",
     password: "",
     restaurantName: "",
-    address: "",
-    phone: "",
   });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [focused, setFocused] = useState("");
@@ -61,8 +59,10 @@ export default function RegisterForm() {
   );
   const [register] = useMutation(CREATE_USER, {
     onError: (error) => {
-      const msg = error.graphQLErrors[0].message;
-      setResponse(msg);
+      if (error.graphQLErrors.length !== 0) {
+        const msg = error.graphQLErrors[0].message;
+        setResponse(msg);
+      }
     },
   });
   const passwordInputRef = useRef(null);
@@ -143,8 +143,6 @@ export default function RegisterForm() {
             email: "",
             password: "",
             restaurantName: "",
-            address: "",
-            phone: "",
           });
           setConfirmPassword("");
           history.push("/dashboard");
@@ -248,35 +246,6 @@ export default function RegisterForm() {
                   })
                 }
                 onBlur={() => setFocused("")}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <br />
-              <Typography component="h2" variant="subtitle1">
-                Contact Information
-              </Typography>
-              <TextField
-                variant="outlined"
-                fullWidth
-                label="Restaurant Address"
-                value={registerInfo.address}
-                onChange={({ target }) =>
-                  setRegisterInfo({ ...registerInfo, address: target.value })
-                }
-                autoComplete="address"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                fullWidth
-                label="Phone Number"
-                value={registerInfo.phone}
-                onChange={({ target }) =>
-                  setRegisterInfo({ ...registerInfo, phone: target.value })
-                }
-                autoComplete="phone"
               />
             </Grid>
           </Grid>

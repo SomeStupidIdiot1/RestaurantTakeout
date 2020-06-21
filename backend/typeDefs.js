@@ -10,8 +10,8 @@ const typeDefs = gql`
   type User {
     email: String!
     restaurantName: String!
-    address: String!
-    phone: String!
+    address: String
+    phone: String
     items: [Item!]!
     id: ID!
     facebook: String
