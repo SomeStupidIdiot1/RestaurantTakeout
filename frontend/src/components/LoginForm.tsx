@@ -130,8 +130,10 @@ export default function LoginForm() {
       >
         {response === "Success" ? (
           <Alert severity="success">Success!</Alert>
-        ) : (
+        ) : response !== "" ? (
           <Alert severity="error">{response}</Alert>
+        ) : (
+          <div></div>
         )}
       </Snackbar>
     </Container>

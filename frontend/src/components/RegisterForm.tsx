@@ -296,11 +296,13 @@ export default function RegisterForm() {
       >
         {response === "Success" ? (
           <Alert severity="success">Success!</Alert>
-        ) : (
+        ) : response !== "" ? (
           <Alert severity="error">
             <AlertTitle>Error</AlertTitle>
             {response}
           </Alert>
+        ) : (
+          <div></div>
         )}
       </Snackbar>
     </Container>
