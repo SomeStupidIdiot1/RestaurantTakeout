@@ -8,6 +8,8 @@ import {
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
+import { useMutation } from "@apollo/react-hooks";
+import { ADD_ITEM } from "../../../mutations";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,15 +21,29 @@ function AddItemDisplay({ show }: { show: boolean }) {
   const [cost, setCost] = useState("");
   const [desc, setDesc] = useState("");
   const [response, setResponse] = useState("");
-
   const classes = useStyles();
   const [focus, setFocus] = useState<string | null>(null);
+  const [addItem] = useMutation(ADD_ITEM, {
+    onError: (error) => {
+      if (error.graphQLErrors.length) {
+        const msg = error.graphQLErrors[0].message;
+        setResponse(msg);
+      }
+    },
+  });
+
   if (!show) return null;
   const onSubmit = (e: React.SyntheticEvent<EventTarget>) => {
     e.preventDefault();
     if (!name || !cost) setResponse("Missing entries");
     else if (!parseFloat(cost)) setResponse("Please fix the entry for cost");
-    else setResponse("Success");
+    else {
+      setResponse("Success");
+      addItem({ variables: { name, cost, desc } });
+      setName("");
+      setCost("");
+      setDesc("");
+    }
   };
   return (
     <Container component="main" maxWidth="xs" className={classes.root}>
