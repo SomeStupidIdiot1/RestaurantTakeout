@@ -11,10 +11,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/react-hooks";
 import { ADD_ITEM } from "../../../mutations";
 import { GET_ITEMS } from "../../../queries";
+import ItemTable from "./ItemTable";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     "margin-top": theme.spacing(3),
+  },
+  topTextField: {
+    "margin-top": 0,
   },
 }));
 function AddItemDisplay({ show }: { show: boolean }) {
@@ -66,55 +70,63 @@ function AddItemDisplay({ show }: { show: boolean }) {
     }
   };
   return (
-    <Container component="main" maxWidth="xs" className={classes.root}>
+    <Container component="main" maxWidth="lg" className={classes.root}>
       <form noValidate onSubmit={onSubmit}>
-        <Grid container>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Item name"
-              autoFocus
-              value={name}
-              onChange={({ target }) => setName(target.value)}
-            />
+        <Grid container spacing={5} alignItems="flex-start">
+          <Grid container item xs={12} lg={4}>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Item name"
+                autoFocus
+                value={name}
+                className={classes.topTextField}
+                onChange={({ target }) => setName(target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Cost"
+                value={cost}
+                onChange={({ target }) => setCost(target.value)}
+                onFocus={() => setFocus("cost")}
+                onBlur={() => setFocus(null)}
+                error={!focus && cost !== "" && !parseFloat(cost)}
+                helperText={
+                  !focus && cost !== "" && !parseFloat(cost)
+                    ? "this is not a number"
+                    : ""
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                multiline
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                label="Description"
+                value={desc}
+                onChange={({ target }) => setDesc(target.value)}
+              />
+            </Grid>
+            <Button type="submit" fullWidth variant="contained" color="primary">
+              Add new item
+            </Button>
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Cost"
-              value={cost}
-              onChange={({ target }) => setCost(target.value)}
-              onFocus={() => setFocus("cost")}
-              onBlur={() => setFocus(null)}
-              error={!focus && cost !== "" && !parseFloat(cost)}
-              helperText={
-                !focus && cost !== "" && !parseFloat(cost)
-                  ? "this is not a number"
-                  : ""
-              }
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              multiline
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              label="Description"
-              value={desc}
-              onChange={({ target }) => setDesc(target.value)}
-            />
+          <Grid container item xs={12} lg={8}>
+            <Grid item xs>
+              <ItemTable />
+            </Grid>
           </Grid>
         </Grid>
-        <Button type="submit" fullWidth variant="contained" color="primary">
-          Add new item
-        </Button>
       </form>
       <Snackbar
         open={!!response}
