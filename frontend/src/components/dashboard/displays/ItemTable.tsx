@@ -348,13 +348,19 @@ export default function ItemTable({
 
   const handleDelete = () => {
     if (selected.length === rows.length) {
-      deleteAllItems();
+      deleteAllItems().then((res) => {
+        if (res) setResponse("Successfully deleted all items");
+      });
       setRows([]);
     } else {
+      let success = true;
       selected.forEach((id) => {
-        deleteItem({ variables: { id } });
+        deleteItem({ variables: { id } }).then((res) => {
+          if (!res) success = false;
+        });
       });
       setRows(rows.filter(({ id }) => !selected.includes(id)));
+      if (success) setResponse("Successfully deleted selected items");
     }
     setSelected([]);
   };

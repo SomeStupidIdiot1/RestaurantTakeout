@@ -61,7 +61,7 @@ function AddItemDisplay({ show }: { show: boolean }) {
     if (!name || !cost) setResponse("Missing entries");
     else if (!parseFloat(cost)) setResponse("Please fix the entry for cost");
     else {
-      setResponse("Success");
+      setResponse("Successfully added an item");
       addItem({
         variables: { name, cost: parseFloat(cost), description: desc },
       });
@@ -124,7 +124,7 @@ function AddItemDisplay({ show }: { show: boolean }) {
           </Grid>
           <Grid container item xs={12} lg={8}>
             <Grid item xs>
-              <ItemTable setResponse={setResponse}/>
+              <ItemTable setResponse={setResponse} />
             </Grid>
           </Grid>
         </Grid>
@@ -134,8 +134,8 @@ function AddItemDisplay({ show }: { show: boolean }) {
         autoHideDuration={6000}
         onClose={() => setResponse("")}
       >
-        {response === "Success" ? (
-          <Alert severity="success">Success!</Alert>
+        {response.startsWith("Success") ? (
+          <Alert severity="success">{response}</Alert>
         ) : response !== "" ? (
           <Alert severity="error">{response}</Alert>
         ) : (
