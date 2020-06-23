@@ -22,8 +22,9 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import { GET_ITEMS } from "../../../queries";
+import { DELETE_ITEM, DELETE_ALL_ITEMS } from "../../../mutations";
 
 interface Data {
   name: string;
@@ -179,12 +180,12 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  handleDelete: (event: React.SyntheticEvent) => void;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
-
+  const { numSelected, handleDelete } = props;
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -212,7 +213,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton aria-label="delete">
+          <IconButton aria-label="delete" onClick={handleDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -252,30 +253,54 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function ItemTable() {
+export default function ItemTable({
+  setResponse,
+}: {
+  setResponse: (err: string) => void;
+}) {
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof Data>("name");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rows, setRows] = React.useState<Data[]>([]);
   let items = useQuery(GET_ITEMS);
-  let rows: Data[] = [];
-  if (!items.loading) {
-    items = items.data.getItems;
-    if (items instanceof Array) {
-      rows = items.map(({ name, id, description, cost }) => ({
+  let [deleteItem] = useMutation(DELETE_ITEM, {
+    onError: (error) => {
+      if (error.graphQLErrors.length) {
+        const msg = error.graphQLErrors[0].message;
+        setResponse(msg);
+        console.log(msg);
+      }
+    },
+    refetchQueries: [{ query: GET_ITEMS }],
+  });
+  let [deleteAllItems] = useMutation(DELETE_ALL_ITEMS, {
+    onError: (error) => {
+      if (error.graphQLErrors.length) {
+        const msg = error.graphQLErrors[0].message;
+        setResponse(msg);
+        console.log(msg);
+      }
+    },
+    refetchQueries: [{ query: GET_ITEMS }],
+  });
+  React.useEffect(() => {
+    let listOfItems = items.data.getItems;
+    if (listOfItems instanceof Array) {
+      let newRows = listOfItems.map(({ name, id, description, cost }) => ({
         name,
         cost,
         description,
         id,
       }));
+      setRows(newRows);
     }
-  } else {
-    return <div>loading...</div>;
-  }
+  }, [items]);
+  if (items.loading) return <div>loading...</div>;
   const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
+    _: React.MouseEvent<unknown>,
     property: keyof Data
   ) => {
     const isAsc = orderBy === property && order === "asc";
@@ -323,7 +348,20 @@ export default function ItemTable() {
     setPage(0);
   };
 
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
+  const handleDelete = () => {
+    if (selected.length === rows.length) {
+      deleteAllItems();
+      setRows([]);
+    } else {
+      selected.forEach((id) => {
+        deleteItem({ variables: { id } });
+      });
+      setRows(rows.filter(({ id }) => !selected.includes(id)));
+    }
+    setSelected([]);
+  };
+
+  const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -331,7 +369,10 @@ export default function ItemTable() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          handleDelete={handleDelete}
+        />
         <TableContainer>
           <Table
             className={classes.table}

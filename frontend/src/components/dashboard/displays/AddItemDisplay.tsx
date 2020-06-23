@@ -50,6 +50,7 @@ function AddItemDisplay({ show }: { show: boolean }) {
       if (error.graphQLErrors.length) {
         const msg = error.graphQLErrors[0].message;
         setResponse(msg);
+        console.log(msg);
       }
     },
   });
@@ -123,7 +124,7 @@ function AddItemDisplay({ show }: { show: boolean }) {
           </Grid>
           <Grid container item xs={12} lg={8}>
             <Grid item xs>
-              <ItemTable />
+              <ItemTable setResponse={setResponse}/>
             </Grid>
           </Grid>
         </Grid>
