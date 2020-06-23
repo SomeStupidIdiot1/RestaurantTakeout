@@ -20,8 +20,8 @@ import Paper from "@material-ui/core/Paper";
 import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
+import TextField from "@material-ui/core/TextField";
 import DeleteIcon from "@material-ui/icons/Delete";
-import FilterListIcon from "@material-ui/icons/FilterList";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { GET_ITEMS } from "../../../queries";
 import { DELETE_ITEM, DELETE_ALL_ITEMS } from "../../../mutations";
@@ -92,7 +92,6 @@ const headCells: HeadCell[] = [
 
 interface EnhancedTableProps {
   classes: ReturnType<typeof useStyles>;
-  numSelected: number;
   onRequestSort: (
     event: React.MouseEvent<unknown>,
     property: keyof Data
@@ -100,19 +99,10 @@ interface EnhancedTableProps {
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
-  rowCount: number;
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
-  const {
-    classes,
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
+  const { classes, onSelectAllClick, order, orderBy, onRequestSort } = props;
   const createSortHandler = (property: keyof Data) => (
     event: React.MouseEvent<unknown>
   ) => {
@@ -124,8 +114,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{ "aria-label": "select all desserts" }}
           />
@@ -181,11 +169,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 interface EnhancedTableToolbarProps {
   numSelected: number;
   handleDelete: (event: React.SyntheticEvent) => void;
+  filter: string;
+  setFilter: (val: string) => void;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected, handleDelete } = props;
+  const { numSelected, handleDelete, filter, setFilter } = props;
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -211,16 +201,18 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           Items
         </Typography>
       )}
-      {numSelected > 0 ? (
+      <TextField
+        fullWidth
+        label="Filter by name"
+        onChange={(e) => setFilter(e.target.value)}
+        value={filter}
+      >
+        test
+      </TextField>
+      {numSelected > 0 && (
         <Tooltip title="Delete">
           <IconButton aria-label="delete" onClick={handleDelete}>
             <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
           </IconButton>
         </Tooltip>
       )}
@@ -265,6 +257,7 @@ export default function ItemTable({
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState<Data[]>([]);
+  const [filter, setFilter] = React.useState("");
   let items = useQuery(GET_ITEMS);
   let [deleteItem] = useMutation(DELETE_ITEM, {
     onError: (error) => {
@@ -299,6 +292,8 @@ export default function ItemTable({
     }
   }, [items]);
   if (items.loading) return <div>loading...</div>;
+  const displayRows = rows.filter(({ name }) => name.includes(filter));
+
   const handleRequestSort = (
     _: React.MouseEvent<unknown>,
     property: keyof Data
@@ -309,12 +304,15 @@ export default function ItemTable({
   };
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const rowIds = displayRows.map((n) => n.id);
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
+      const newSelecteds = rowIds
+        .concat(selected)
+        .filter((value, index, self) => self.indexOf(value) === index);
       setSelected(newSelecteds);
       return;
     }
-    setSelected([]);
+    setSelected(selected.filter((item) => !rowIds.includes(item)));
   };
 
   const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
@@ -372,6 +370,8 @@ export default function ItemTable({
         <EnhancedTableToolbar
           numSelected={selected.length}
           handleDelete={handleDelete}
+          setFilter={setFilter}
+          filter={filter}
         />
         <TableContainer>
           <Table
@@ -382,15 +382,13 @@ export default function ItemTable({
           >
             <EnhancedTableHead
               classes={classes}
-              numSelected={selected.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(displayRows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.id);
@@ -436,7 +434,7 @@ export default function ItemTable({
         <TablePagination
           rowsPerPageOptions={[5, 10, 15, 20, 25]}
           component="div"
-          count={rows.length}
+          count={displayRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
