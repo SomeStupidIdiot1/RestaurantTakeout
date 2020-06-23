@@ -73,11 +73,10 @@ export default function RegisterForm() {
     }
   }, [result.data]);
   const passwordInputRef = useRef(null);
-  const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; //eslint-disable-line
   const emailHelperText =
-    !registerInfo.email.match(EMAIL_REGEX) &&
-    focused !== "email" &&
-    registerInfo.email !== ""
+    !registerInfo.email.match(/^\S+@\S+$/) &&
+      focused !== "email" &&
+      registerInfo.email !== ""
       ? "This email is invalid"
       : "";
   const getPasswordHelperText = ():
@@ -117,14 +116,14 @@ export default function RegisterForm() {
       requiredParameters.length !== 0 && focused === "password" ? (
         <div>{requiredParameters}</div>
       ) : (
-        ""
-      );
+          ""
+        );
     return passwordHelperText;
   };
   const confirmPasswordHelperText =
     confirmPassword !== registerInfo.password &&
-    focused !== "Confirm password" &&
-    confirmPassword !== ""
+      focused !== "Confirm password" &&
+      confirmPassword !== ""
       ? "This does not match the password."
       : "";
   const onSubmit = (event: React.SyntheticEvent<EventTarget>): void => {
@@ -302,8 +301,8 @@ export default function RegisterForm() {
             {response}
           </Alert>
         ) : (
-          <div></div>
-        )}
+              <div></div>
+            )}
       </Snackbar>
     </Container>
   );

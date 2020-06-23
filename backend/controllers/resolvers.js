@@ -5,7 +5,7 @@ const Item = require("../models/Item");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const SALT_ROUNDS = 10;
-const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; //eslint-disable-line
+const EMAIL_REGEX = /^\S+@\S+$/;
 const PASS_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,40}$/;
 const resolvers = {
   Query: {
