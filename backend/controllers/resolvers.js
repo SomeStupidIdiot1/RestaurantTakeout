@@ -3,6 +3,7 @@ const { JWT_SECRET } = require("../util/config");
 const jwt = require("jsonwebtoken");
 const Item = require("../models/Item");
 const User = require("../models/User");
+const Category = require("../models/Category");
 const bcrypt = require("bcrypt");
 const SALT_ROUNDS = 10;
 const EMAIL_REGEX = /^\S+@\S+$/;
@@ -10,8 +11,15 @@ const PASS_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,
 const resolvers = {
   Query: {
     me: (_, __, context) => context.currentUser,
-    getItems: () => {
-      return Item.find({});
+    getItems: (_, __, context) => {
+      const user = context.currentUser;
+      if (!user) throw new AuthenticationError("not logged in");
+      return context.currentUser.items;
+    },
+    getCategories: (_, __, context) => {
+      const user = context.currentUser;
+      if (!user) throw new AuthenticationError("not logged in");
+      return context.currentUser.categories;
     },
   },
   Mutation: {
@@ -39,6 +47,66 @@ const resolvers = {
       const newArgs = { ...args };
       delete newArgs.id;
       return Item.findByIdAndUpdate(args.id, newArgs);
+    },
+    addCategory: async (_, args, context) => {
+      const user = context.currentUser;
+
+      if (!user) throw new AuthenticationError("not logged in");
+      let category = new Category({ name: args.name, items: [] });
+      try {
+        category = await category.save();
+
+        await User.findByIdAndUpdate(user._id, {
+          $push: { categories: category._id },
+        });
+        return category;
+      } catch (err) {
+        throw new UserInputError(err.message, {
+          invalidArgs: args,
+        });
+      }
+    },
+    editCategoryName: (_, args, context) => {
+      if (!context.currentUser) throw new AuthenticationError("not logged in");
+      if (
+        !context.currentUser.categories.find(
+          (val) => String(val._id) === args.id
+        )
+      )
+        throw new AuthenticationError("this item does not belong to this user");
+      return Category.findByIdAndUpdate(args.id, { name: args.name }).populate(
+        "items"
+      );
+    },
+    addItemToCategory: async (_, args, context) => {
+      if (!context.currentUser) throw new AuthenticationError("not logged in");
+      if (
+        !context.currentUser.categories.find(
+          (val) => String(val._id) === args.id
+        )
+      )
+        throw new AuthenticationError(
+          "this category does not belong to this user"
+        );
+      console.log(context.currentUser.categories[0]);
+
+      return await Category.findByIdAndUpdate(args.id, {
+        $push: { items: args.itemId },
+      }).populate("items");
+    },
+    removeItemFromCategory: async (_, args, context) => {
+      if (!context.currentUser) throw new AuthenticationError("not logged in");
+      if (
+        !context.currentUser.categories.find(
+          (val) => String(val._id) === args.id
+        )
+      )
+        throw new AuthenticationError(
+          "this category does not belong to this user"
+        );
+      return await Category.findByIdAndUpdate(args.id, {
+        $pull: { items: args.itemId },
+      }).populate("items");
     },
     deleteItem: async (_, args, context) => {
       if (!context.currentUser) throw new AuthenticationError("not logged in");

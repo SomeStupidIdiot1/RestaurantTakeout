@@ -13,11 +13,17 @@ const typeDefs = gql`
     address: String
     phone: String
     items: [Item!]!
+    categories: [Category!]!
     id: ID!
     facebook: String
     youtube: String
     instagram: String
     twitter: String
+  }
+  type Category {
+    name: String!
+    items: [Item!]!
+    id: ID!
   }
   type Token {
     value: String!
@@ -25,12 +31,17 @@ const typeDefs = gql`
   type Query {
     me: User
     getItems: [Item]
+    getCategories: [Category]
   }
   type Mutation {
     addItem(name: String!, cost: Float!, description: String): Item
     editItem(id: ID!, name: String, cost: Float, description: String): Item
     deleteItem(id: ID!): Item
     deleteAllItems: Boolean
+    addCategory(name: String!): Category
+    editCategoryName(id: ID!, name: String!): Category
+    addItemToCategory(id: ID!, itemId: ID!): Category
+    removeItemFromCategory(id: ID!, itemId: ID!): Category
     createUser(
       email: String!
       password: String!

@@ -13,8 +13,11 @@ const schema = new mongoose.Schema({
   items: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Item", required: true },
   ],
+  categories: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
+  ],
   restaurantName: { type: String, required: true },
-  address: { type: String},
+  address: { type: String },
   phone: { type: String },
   facebook: { type: String },
   youtube: { type: String },
