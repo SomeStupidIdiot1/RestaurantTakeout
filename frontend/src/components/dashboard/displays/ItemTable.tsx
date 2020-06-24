@@ -192,15 +192,15 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           {numSelected} selected
         </Typography>
       ) : (
-          <Typography
-            className={classes.title}
-            variant="h6"
-            id="tableTitle"
-            component="div"
-          >
+        <Typography
+          className={classes.title}
+          variant="h6"
+          id="tableTitle"
+          component="div"
+        >
             Items
-          </Typography>
-        )}
+        </Typography>
+      )}
       <TextField
         fullWidth
         label="Filter by name"
@@ -258,8 +258,8 @@ export default function ItemTable({
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState<Data[]>([]);
   const [filter, setFilter] = React.useState("");
-  let items = useQuery(GET_ITEMS);
-  let [deleteItem] = useMutation(DELETE_ITEM, {
+  const items = useQuery(GET_ITEMS);
+  const [deleteItem] = useMutation(DELETE_ITEM, {
     onError: (error) => {
       if (error.graphQLErrors.length) {
         const msg = error.graphQLErrors[0].message;
@@ -269,7 +269,7 @@ export default function ItemTable({
     },
     refetchQueries: [{ query: GET_ITEMS }],
   });
-  let [deleteAllItems] = useMutation(DELETE_ALL_ITEMS, {
+  const [deleteAllItems] = useMutation(DELETE_ALL_ITEMS, {
     onError: (error) => {
       if (error.graphQLErrors.length) {
         const msg = error.graphQLErrors[0].message;
@@ -280,9 +280,9 @@ export default function ItemTable({
     refetchQueries: [{ query: GET_ITEMS }],
   });
   React.useEffect(() => {
-    let listOfItems = items.data.getItems;
+    const listOfItems = items.data.getItems;
     if (listOfItems instanceof Array) {
-      let newRows = listOfItems.map(({ name, id, description, cost }) => ({
+      const newRows = listOfItems.map(({ name, id, description, cost }) => ({
         name,
         cost,
         description,

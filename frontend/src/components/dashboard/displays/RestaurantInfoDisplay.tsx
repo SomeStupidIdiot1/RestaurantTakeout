@@ -1,9 +1,9 @@
 import React from "react";
-
+import { Container } from "@material-ui/core";
 function RestaurantInfoDisplay({ show }: { show: boolean }) {
   if (!show) return null;
 
-  return <div>EDIT RESTAURANT INFO</div>;
+  return <Container component="main" maxWidth="lg"></Container>;
 }
 
 export default RestaurantInfoDisplay;

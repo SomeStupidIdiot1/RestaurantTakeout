@@ -2,52 +2,26 @@ module.exports = {
   env: {
     browser: true,
     es6: true,
+    jest: true,
   },
   extends: [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
   ],
-  globals: {
-    Atomics: "readonly",
-    SharedArrayBuffer: "readonly",
-  },
-  parser: "@typescript-eslint/parser",
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 2018,
-    sourceType: "module",
-  },
   plugins: ["react", "@typescript-eslint"],
-  rules: {
-    "linebreak-style": ["error", "windows"],
-    quotes: ["error", "double"],
-    semi: ["error", "always"],
-    "@typescript-eslint/no-explicit-any": 2,
-  },
   settings: {
     react: {
-      createClass: "createReactClass", // Regex for Component Factory to use,
-      // default to "createReactClass"
-      pragma: "React", // Pragma to use, default to "React"
-      version: "detect", // React version. "detect" automatically picks the version you have installed.
-      // You can also use `16.0`, `16.3`, etc, if you want to override the detected value.
-      // default to latest and warns if missing
-      // It will default to "detect" in the future
-      flowVersion: "0.53", // Flow version
+      pragma: "React",
+      version: "detect",
     },
-    propWrapperFunctions: [
-      // The names of any function used to wrap propTypes, e.g. `forbidExtraProps`. If this isn't set, any propTypes wrapped in a function will be skipped.
-      "forbidExtraProps",
-      { property: "freeze", object: "Object" },
-      { property: "myFavoriteWrapper" },
-    ],
-    linkComponents: [
-      // Components used as alternatives to <a> for linking, eg. <Link to={ url } />
-      "Hyperlink",
-      { name: "Link", linkAttribute: "to" },
-    ],
+  },
+  rules: {
+    "@typescript-eslint/semi": ["error"],
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+    "@typescript-eslint/no-explicit-any": 1,
+    "no-case-declarations": 0,
   },
 };

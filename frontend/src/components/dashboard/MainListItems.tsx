@@ -7,7 +7,11 @@ import ContactsIcon from "@material-ui/icons/Contacts";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 import FastfoodIcon from "@material-ui/icons/Fastfood";
 import List from "@material-ui/core/List";
-const MainListItems = ({ setOnDisplay }: { setOnDisplay: Function }) => {
+const MainListItems = ({
+  setOnDisplay,
+}: {
+  setOnDisplay: (display: string) => void;
+}) => {
   return (
     <List>
       <ListItem button onClick={() => setOnDisplay("dashboard")}>

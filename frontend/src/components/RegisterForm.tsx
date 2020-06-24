@@ -54,9 +54,7 @@ export default function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [focused, setFocused] = useState("");
   const [response, setResponse] = useState("");
-  const [anchorEl, setAnchorEl]: [null | HTMLInputElement, Function] = useState(
-    null
-  );
+  const [anchorEl, setAnchorEl] = useState<null | HTMLInputElement>(null);
   const [register] = useMutation(CREATE_USER, {
     onError: (error) => {
       if (error.graphQLErrors.length !== 0) {
@@ -75,8 +73,8 @@ export default function RegisterForm() {
   const passwordInputRef = useRef(null);
   const emailHelperText =
     !registerInfo.email.match(/^\S+@\S+$/) &&
-      focused !== "email" &&
-      registerInfo.email !== ""
+    focused !== "email" &&
+    registerInfo.email !== ""
       ? "This email is invalid"
       : "";
   const getPasswordHelperText = ():
@@ -116,14 +114,14 @@ export default function RegisterForm() {
       requiredParameters.length !== 0 && focused === "password" ? (
         <div>{requiredParameters}</div>
       ) : (
-          ""
-        );
+        ""
+      );
     return passwordHelperText;
   };
   const confirmPasswordHelperText =
     confirmPassword !== registerInfo.password &&
-      focused !== "Confirm password" &&
-      confirmPassword !== ""
+    focused !== "Confirm password" &&
+    confirmPassword !== ""
       ? "This does not match the password."
       : "";
   const onSubmit = (event: React.SyntheticEvent<EventTarget>): void => {
@@ -301,8 +299,8 @@ export default function RegisterForm() {
             {response}
           </Alert>
         ) : (
-              <div></div>
-            )}
+          <div></div>
+        )}
       </Snackbar>
     </Container>
   );

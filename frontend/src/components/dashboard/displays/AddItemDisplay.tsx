@@ -31,7 +31,7 @@ function AddItemDisplay({ show }: { show: boolean }) {
   const [addItem] = useMutation(ADD_ITEM, {
     update: (store, response) => {
       type dataType = {
-        getItems: Object[];
+        getItems: unknown[];
       };
       const dataInStore = store.readQuery<dataType>({
         query: GET_ITEMS,
