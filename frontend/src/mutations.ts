@@ -103,3 +103,33 @@ export const DELETE_USER = gql`
     }
   }
 `;
+export const EDIT_USER_CONTACT = gql`
+  mutation editUserContactInfo(
+    $restaurantName: String
+    $address: String
+    $phone: String
+    $facebook: String
+    $youtube: String
+    $instagram: String
+    $twitter: String
+  ) {
+    editUserContactInfo(
+      restaurantName: $restaurantName
+      address: $address
+      phone: $phone
+      facebook: $facebook
+      youtube: $youtube
+      instagram: $instagram
+      twitter: $twitter
+    ) {
+      email
+      restaurantName
+      address
+      phone
+      facebook
+      youtube
+      instagram
+      twitter
+    }
+  }
+`;

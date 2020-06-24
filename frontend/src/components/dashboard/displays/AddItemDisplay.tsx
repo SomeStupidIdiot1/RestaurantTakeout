@@ -15,7 +15,7 @@ import ItemTable from "./ItemTable";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    "margin-top": theme.spacing(3),
+    "margin-top": theme.spacing(4),
   },
   topTextField: {
     "margin-top": 0,

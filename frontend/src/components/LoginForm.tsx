@@ -64,9 +64,10 @@ export default function LoginForm() {
     login({ variables: { email, password } }).then((res) => {
       if (res) {
         setResponse("Success");
-        setEmail("");
-        setPassword("");
+
         setTimeout(() => {
+          setEmail("");
+          setPassword("");
           history.push("/dashboard");
           window.location.reload();
         }, 1000);
