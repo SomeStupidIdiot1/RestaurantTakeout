@@ -7,6 +7,9 @@ const schema = new mongoose.Schema({
   items: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Item", required: true },
   ],
+  desc: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Category", schema);

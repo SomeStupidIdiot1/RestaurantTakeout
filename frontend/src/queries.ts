@@ -31,3 +31,13 @@ export const GET_ITEMS = gql`
     }
   }
 `;
+export const GET_ITEMS_NOT_IN_CATEGORY = gql`
+  query {
+    getItemsNotInCategory {
+      name
+      description
+      cost
+      id
+    }
+  }
+`;

@@ -66,7 +66,7 @@ const resolvers = {
       const user = context.currentUser;
 
       if (!user) throw new AuthenticationError("not logged in");
-      let category = new Category({ name: args.name, items: [] });
+      let category = new Category({ ...args, items: [] });
       try {
         category = await category.save();
 
@@ -80,7 +80,7 @@ const resolvers = {
         });
       }
     },
-    editCategoryName: (_, args, context) => {
+    editCategory: (_, args, context) => {
       if (!context.currentUser) throw new AuthenticationError("not logged in");
       if (
         !context.currentUser.categories.find(
@@ -88,9 +88,8 @@ const resolvers = {
         )
       )
         throw new AuthenticationError("this item does not belong to this user");
-      return Category.findByIdAndUpdate(args.id, { name: args.name }).populate(
-        "items"
-      );
+      delete args.id;
+      return Category.findByIdAndUpdate(args.id, { ...args }).populate("items");
     },
     addItemToCategory: async (_, args, context) => {
       if (!context.currentUser) throw new AuthenticationError("not logged in");

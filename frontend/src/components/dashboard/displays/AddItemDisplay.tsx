@@ -10,7 +10,7 @@ import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/react-hooks";
 import { ADD_ITEM } from "../../../mutations";
-import { GET_ITEMS } from "../../../queries";
+import { GET_ITEMS, GET_ITEMS_NOT_IN_CATEGORY } from "../../../queries";
 import ItemTable from "./ItemTable";
 
 const useStyles = makeStyles((theme) => ({
@@ -53,6 +53,7 @@ function AddItemDisplay({ show }: { show: boolean }) {
         console.log(msg);
       }
     },
+    refetchQueries: [{ query: GET_ITEMS_NOT_IN_CATEGORY }],
   });
 
   if (!show) return null;

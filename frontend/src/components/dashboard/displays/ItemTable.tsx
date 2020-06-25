@@ -23,7 +23,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import TextField from "@material-ui/core/TextField";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { GET_ITEMS } from "../../../queries";
+import { GET_ITEMS, GET_ITEMS_NOT_IN_CATEGORY } from "../../../queries";
 import { DELETE_ITEM, DELETE_ALL_ITEMS } from "../../../mutations";
 
 interface Data {
@@ -49,9 +49,9 @@ function getComparator<Key extends keyof number | string>(
   order: Order,
   orderBy: Key
 ): (
-    a: { [key in Key]: number | string },
-    b: { [key in Key]: number | string }
-  ) => number {
+  a: { [key in Key]: number | string },
+  b: { [key in Key]: number | string }
+) => number {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -153,13 +153,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     highlight:
       theme.palette.type === "light"
         ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
         : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
     title: {
       flex: "1 1 100%",
     },
@@ -198,7 +198,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           id="tableTitle"
           component="div"
         >
-            Items
+          Items
         </Typography>
       )}
       <TextField
@@ -267,7 +267,10 @@ export default function ItemTable({
         console.log(msg);
       }
     },
-    refetchQueries: [{ query: GET_ITEMS }],
+    refetchQueries: [
+      { query: GET_ITEMS },
+      { query: GET_ITEMS_NOT_IN_CATEGORY },
+    ],
   });
   const [deleteAllItems] = useMutation(DELETE_ALL_ITEMS, {
     onError: (error) => {
@@ -277,18 +280,23 @@ export default function ItemTable({
         console.log(msg);
       }
     },
-    refetchQueries: [{ query: GET_ITEMS }],
+    refetchQueries: [
+      { query: GET_ITEMS },
+      { query: GET_ITEMS_NOT_IN_CATEGORY },
+    ],
   });
   React.useEffect(() => {
-    const listOfItems = items.data.getItems;
-    if (listOfItems instanceof Array) {
-      const newRows = listOfItems.map(({ name, id, description, cost }) => ({
-        name,
-        cost,
-        description,
-        id,
-      }));
-      setRows(newRows);
+    if (!items.loading) {
+      const listOfItems = items.data.getItems;
+      if (listOfItems instanceof Array) {
+        const newRows = listOfItems.map(({ name, id, description, cost }) => ({
+          name,
+          cost,
+          description,
+          id,
+        }));
+        setRows(newRows);
+      }
     }
   }, [items]);
   if (items.loading) return <div>loading...</div>;

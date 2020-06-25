@@ -22,6 +22,7 @@ const typeDefs = gql`
   }
   type Category {
     name: String!
+    desc: String
     items: [Item!]!
     id: ID!
   }
@@ -39,8 +40,8 @@ const typeDefs = gql`
     editItem(id: ID!, name: String, cost: Float, description: String): Item
     deleteItem(id: ID!): Item
     deleteAllItems: Boolean
-    addCategory(name: String!): Category
-    editCategoryName(id: ID!, name: String!): Category
+    addCategory(name: String!, desc: String): Category
+    editCategory(id: ID!, name: String, desc: String): Category
     addItemToCategory(id: ID!, itemId: ID!): Category
     removeItemFromCategory(id: ID!, itemId: ID!): Category
     createUser(
