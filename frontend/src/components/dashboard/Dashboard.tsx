@@ -13,11 +13,9 @@ import {
   Toolbar,
   IconButton,
   Divider,
-  Badge,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import SettingsIcon from "@material-ui/icons/Settings";
 import MainListItems from "./MainListItems";
 import { GET_ME } from "../../queries";
@@ -153,11 +151,6 @@ export default function Dashboard() {
             <IconButton color="inherit">
               <SettingsIcon />
             </IconButton>
-            <IconButton color="inherit">
-              <Badge badgeContent={1} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -173,7 +166,7 @@ export default function Dashboard() {
             </IconButton>
           </div>
           <Divider />
-          <MainListItems setOnDisplay={setOnDisplay} />
+          <MainListItems display={onDisplay} setOnDisplay={setOnDisplay} />
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
