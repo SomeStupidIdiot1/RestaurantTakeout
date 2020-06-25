@@ -21,6 +21,20 @@ const resolvers = {
       if (!user) throw new AuthenticationError("not logged in");
       return context.currentUser.categories;
     },
+    getItemsNotInCategory: (_, __, context) => {
+      const user = context.currentUser;
+      if (!user) throw new AuthenticationError("not logged in");
+      const items = context.currentUser.items;
+      const categoryItems = [].concat.apply(
+        [],
+        context.currentUser.categories.map(({ items }) =>
+          items.map(({ _id }) => String(_id))
+        )
+      );
+      return items.filter(({ _id }) => {
+        return !categoryItems.includes(String(_id));
+      });
+    },
   },
   Mutation: {
     addItem: async (_, args, context) => {

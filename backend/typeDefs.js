@@ -32,6 +32,7 @@ const typeDefs = gql`
     me: User
     getItems: [Item]
     getCategories: [Category]
+    getItemsNotInCategory: [Item]
   }
   type Mutation {
     addItem(name: String!, cost: Float!, description: String): Item
