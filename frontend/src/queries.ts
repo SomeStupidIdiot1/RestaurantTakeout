@@ -41,3 +41,18 @@ export const GET_ITEMS_NOT_IN_CATEGORY = gql`
     }
   }
 `;
+export const GET_CATEGORIES = gql`
+  query {
+    getCategories {
+      name
+      desc
+      id
+      items {
+        name
+        description
+        cost
+        id
+      }
+    }
+  }
+`;

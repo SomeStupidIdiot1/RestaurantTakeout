@@ -133,3 +133,12 @@ export const EDIT_USER_CONTACT = gql`
     }
   }
 `;
+export const ADD_CATEGORY = gql`
+  mutation addCategory($name: String!, $desc: String) {
+    addCategory(name: $name, desc: $desc) {
+      name
+      desc
+      id
+    }
+  }
+`;

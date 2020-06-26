@@ -1,12 +1,14 @@
 import React from "react";
-import { useQuery } from "@apollo/react-hooks";
-import { GET_ITEMS_NOT_IN_CATEGORY } from "../../../queries";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import { GET_ITEMS_NOT_IN_CATEGORY, GET_CATEGORIES } from "../../../queries";
+import { ADD_CATEGORY } from "../../../mutations";
 import {
   Container,
   Grid,
   TextField,
   Button,
   Snackbar,
+  MenuItem,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,6 +20,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   alert: { margin: theme.spacing(4) },
+  currCategory: {
+    width: 300,
+    borderRadius: 4,
+  },
 }));
 
 function MenuDisplay({ show }: { show: boolean }) {
@@ -25,11 +31,42 @@ function MenuDisplay({ show }: { show: boolean }) {
   const [response, setResponse] = React.useState("");
   const [categoryName, setCategoryName] = React.useState("");
   const [categoryDesc, setCategoryDesc] = React.useState("");
+  const [currCategory, setCurrCategory] = React.useState("");
   let items = useQuery(GET_ITEMS_NOT_IN_CATEGORY);
+  let categories = useQuery(GET_CATEGORIES);
+  let [addCategory] = useMutation(ADD_CATEGORY, {
+    onError: (error) => {
+      if (error.graphQLErrors.length)
+        setResponse(error.graphQLErrors[0].message);
+    },
+    refetchQueries: [{ query: GET_CATEGORIES }],
+  });
+  let menuItems: React.ReactElement[] = [];
   if (!items.loading) items = items.data.getItemsNotInCategory;
+  if (!categories.loading) {
+    categories = categories.data.getCategories;
+    if (categories instanceof Array)
+      menuItems = categories.map(({ id, name }) => {
+        return (
+          <MenuItem key={id} value={id}>
+            {name}
+          </MenuItem>
+        );
+      });
+  }
   const onSubmit = (event: React.SyntheticEvent<EventTarget>) => {
     event.preventDefault();
     if (!categoryName) setResponse("Category name is required");
+    else {
+      setCategoryDesc("");
+      setCategoryName("");
+      addCategory({
+        variables: { name: categoryName, desc: categoryDesc },
+      }).then((res) => {
+        if (res) setResponse("Successfully added a new category");
+      });
+      setResponse("Successfully added a new category");
+    }
   };
   if (!show) return null;
   return (
@@ -73,7 +110,19 @@ function MenuDisplay({ show }: { show: boolean }) {
               Add new category
             </Button>
           </Grid>
-          {/* <Grid container item xs={12} lg={8}></Grid> */}
+          <Grid container item xs={12} lg={8}>
+            <TextField
+              label="Select category"
+              select
+              value={currCategory}
+              className={classes.currCategory}
+              onChange={(event) => setCurrCategory(event.target.value)}
+              variant="filled"
+              margin="normal"
+            >
+              {menuItems}
+            </TextField>
+          </Grid>
         </Grid>
       </form>
       <Snackbar

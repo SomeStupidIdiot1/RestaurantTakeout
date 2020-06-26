@@ -24,7 +24,12 @@ const useStyles = makeStyles((theme) => ({
 function RestaurantInfoDisplay({ show }: { show: boolean }) {
   const classes = useStyles();
   const initialInfo = useQuery(GET_ME);
-  const [editUserContact] = useMutation(EDIT_USER_CONTACT);
+  const [editUserContact] = useMutation(EDIT_USER_CONTACT, {
+    onError: (error) => {
+      if (error.graphQLErrors.length)
+        setResponse(error.graphQLErrors[0].message);
+    },
+  });
   const [instagram, setInsta] = React.useState("");
   const [youtube, setYoutube] = React.useState("");
   const [twitter, setTwitter] = React.useState("");
