@@ -11,6 +11,7 @@ import {
   Grid,
   TextField,
   Button,
+  Input,
   Snackbar,
   Chip,
   MenuItem,
@@ -26,10 +27,13 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    marginTop: theme.spacing(4),
   },
   alert: { margin: theme.spacing(4) },
   chip: {
-    border: "1px black solid",
+    background: theme.palette.grey[100],
+    minHeight: 100,
+    marginBottom: 10,
   },
   select: {
     width: 150,
@@ -72,7 +76,10 @@ function MenuDisplay({ show }: { show: boolean }) {
       if (error.graphQLErrors.length)
         setResponse(error.graphQLErrors[0].message);
     },
-    refetchQueries: [{ query: GET_ITEMS_NOT_IN_CATEGORY }],
+    refetchQueries: [
+      { query: GET_ITEMS_NOT_IN_CATEGORY },
+      { query: GET_CATEGORIES },
+    ],
   });
   let menuItems: React.ReactElement[] = [];
   let chips: React.ReactElement[] = [];
@@ -81,6 +88,7 @@ function MenuDisplay({ show }: { show: boolean }) {
   if (!items.loading) {
     items = items.data.getItemsNotInCategory;
     if (items instanceof Array) {
+      console.log(items);
       itemsNotInCategories = items.map(({ name, id }) => (
         <MenuItem key={id} value={id}>
           {name}
@@ -112,7 +120,11 @@ function MenuDisplay({ show }: { show: boolean }) {
         chips = currCategoryObject.items.map((item) => (
           <Chip
             size="medium"
-            label={item.name}
+            label={
+              item.name.length <= 20
+                ? item.name
+                : item.name.substring(0, 20) + "..."
+            }
             key={item.id}
             // onDelete={handleDelete}
           />
@@ -120,6 +132,7 @@ function MenuDisplay({ show }: { show: boolean }) {
       }
     }
   }
+
   const onSubmitNewCategory = (event: React.SyntheticEvent<EventTarget>) => {
     event.preventDefault();
     if (!categoryName) setResponse("Category name is required");
@@ -238,10 +251,19 @@ function MenuDisplay({ show }: { show: boolean }) {
             <Select
               labelId="add-items-to-category"
               multiple
+              input={<Input />}
               className={classes.select}
               value={selectedItems}
+              disabled={itemsNotInCategories.length === 0}
               onChange={(event) => {
                 changeSelectedItems(event.target.value as string[]);
+              }}
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    width: 250,
+                  },
+                },
               }}
             >
               {itemsNotInCategories}
