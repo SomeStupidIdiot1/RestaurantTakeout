@@ -142,3 +142,31 @@ export const ADD_CATEGORY = gql`
     }
   }
 `;
+export const ADD_ITEM_TO_CATEGORY = gql`
+  mutation addItemToCategory($id: ID!, $itemId: [ID]!) {
+    addItemToCategory(id: $id, itemId: $itemId) {
+      name
+      desc
+      items {
+        name
+        cost
+        description
+      }
+      id
+    }
+  }
+`;
+export const EDIT_CATEGORY = gql`
+  mutation editCategory($id: ID!, $name: String, $desc: String) {
+    editCategory(id: $id, name: $name, desc: $desc) {
+      name
+      desc
+      items {
+        name
+        cost
+        description
+      }
+      id
+    }
+  }
+`;

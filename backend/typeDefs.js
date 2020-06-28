@@ -42,7 +42,7 @@ const typeDefs = gql`
     deleteAllItems: Boolean
     addCategory(name: String!, desc: String): Category
     editCategory(id: ID!, name: String, desc: String): Category
-    addItemToCategory(id: ID!, itemId: ID!): Category
+    addItemToCategory(id: ID!, itemId: [ID]!): Category
     removeItemFromCategory(id: ID!, itemId: ID!): Category
     createUser(
       email: String!

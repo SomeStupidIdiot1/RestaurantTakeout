@@ -1,7 +1,11 @@
 import React from "react";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { GET_ITEMS_NOT_IN_CATEGORY, GET_CATEGORIES } from "../../../queries";
-import { ADD_CATEGORY } from "../../../mutations";
+import {
+  ADD_CATEGORY,
+  ADD_ITEM_TO_CATEGORY,
+  EDIT_CATEGORY,
+} from "../../../mutations";
 import {
   Container,
   Grid,
@@ -56,6 +60,20 @@ function MenuDisplay({ show }: { show: boolean }) {
     },
     refetchQueries: [{ query: GET_CATEGORIES }],
   });
+  let [editCategory] = useMutation(EDIT_CATEGORY, {
+    onError: (error) => {
+      if (error.graphQLErrors.length)
+        setResponse(error.graphQLErrors[0].message);
+    },
+    refetchQueries: [{ query: GET_CATEGORIES }],
+  });
+  let [addItemsToCategory] = useMutation(ADD_ITEM_TO_CATEGORY, {
+    onError: (error) => {
+      if (error.graphQLErrors.length)
+        setResponse(error.graphQLErrors[0].message);
+    },
+    refetchQueries: [{ query: GET_ITEMS_NOT_IN_CATEGORY }],
+  });
   let menuItems: React.ReactElement[] = [];
   let chips: React.ReactElement[] = [];
   let itemsNotInCategories: React.ReactElement[] = [];
@@ -106,28 +124,41 @@ function MenuDisplay({ show }: { show: boolean }) {
     event.preventDefault();
     if (!categoryName) setResponse("Category name is required");
     else {
-      setCategoryDesc("");
-      setCategoryName("");
       addCategory({
         variables: { name: categoryName, desc: categoryDesc },
       }).then((res) => {
         if (res) setResponse("Successfully added a new category");
       });
-      setResponse("Successfully added a new category");
+      setCategoryDesc("");
+      setCategoryName("");
     }
   };
   const onSubmitEditCategory = (event: React.SyntheticEvent<EventTarget>) => {
     event.preventDefault();
-    if (!currCategory) setResponse("Select a category to edit");
-    else {
+    if (!currCategory) {
+      setResponse("Select a category to edit");
+      return;
+    }
+    if (editedCategoryName || editedCategoryDesc) {
+      editCategory({
+        variables: {
+          id: currCategory,
+          name: editedCategoryName,
+          desc: editedCategoryDesc,
+        },
+      }).then((res) => {
+        if (res) setResponse("Successfully edited the category");
+      });
       editCategoryDesc("");
       editCategoryName("");
-      // addCategory({
-      //   variables: { name: categoryName, desc: categoryDesc },
-      // }).then((res) => {
-      //   if (res) setResponse("Successfully added a new category");
-      // });
-      setResponse("Successfully edited the category");
+    }
+    if (selectedItems.length) {
+      addItemsToCategory({
+        variables: { id: currCategory, itemId: selectedItems },
+      }).then((res) => {
+        if (res) setResponse("Successfully edited the category");
+      });
+      changeSelectedItems([]);
     }
   };
 

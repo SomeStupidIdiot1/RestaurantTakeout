@@ -88,8 +88,8 @@ const resolvers = {
         )
       )
         throw new AuthenticationError("this item does not belong to this user");
-      delete args.id;
-      return Category.findByIdAndUpdate(args.id, { ...args }).populate("items");
+      const id = args.id;
+      return Category.findByIdAndUpdate(id, { ...args }).populate("items");
     },
     addItemToCategory: async (_, args, context) => {
       if (!context.currentUser) throw new AuthenticationError("not logged in");
@@ -101,10 +101,8 @@ const resolvers = {
         throw new AuthenticationError(
           "this category does not belong to this user"
         );
-      console.log(context.currentUser.categories[0]);
-
       return await Category.findByIdAndUpdate(args.id, {
-        $push: { items: args.itemId },
+        $push: { items: { $each: args.itemId } },
       }).populate("items");
     },
     removeItemFromCategory: async (_, args, context) => {
