@@ -4,7 +4,9 @@ import {
   Grid,
   Container,
   Button,
+  Input,
   Snackbar,
+  FormLabel,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
@@ -15,10 +17,13 @@ import ItemTable from "./ItemTable";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    "margin-top": theme.spacing(4),
+    marginTop: theme.spacing(4),
   },
   topTextField: {
-    "margin-top": 0,
+    marginTop: 0,
+  },
+  input: {
+    margin: theme.spacing(1, 0),
   },
 }));
 function AddItemDisplay({ show }: { show: boolean }) {
@@ -28,6 +33,7 @@ function AddItemDisplay({ show }: { show: boolean }) {
   const [response, setResponse] = useState("");
   const classes = useStyles();
   const [focus, setFocus] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [addItem] = useMutation(ADD_ITEM, {
     update: (store, response) => {
       type dataType = {
@@ -119,6 +125,23 @@ function AddItemDisplay({ show }: { show: boolean }) {
                 onChange={({ target }) => setDesc(target.value)}
               />
             </Grid>
+            <FormLabel className={classes.input} htmlFor="file-upload">
+              {"Upload image (not required) "}
+              <Input
+                name="file"
+                type="file"
+                id="file-upload"
+                data-cloudinary-field="image_id"
+                data-form-data="{ 'transformation': {'crop':'scale','width':200,'height':200}}"
+                onChange={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  const file: File = (target.files as FileList)[0];
+                  setFile(file);
+                }}
+                disableUnderline
+              />
+            </FormLabel>
+
             <Button type="submit" fullWidth variant="contained" color="primary">
               Add new item
             </Button>
