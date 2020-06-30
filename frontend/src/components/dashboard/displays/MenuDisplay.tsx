@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0, 0),
     color: theme.palette.grey[700],
   },
+  containerItem: {},
 }));
 
 function MenuDisplay({ show }: { show: boolean }) {
@@ -81,14 +82,13 @@ function MenuDisplay({ show }: { show: boolean }) {
       { query: GET_CATEGORIES },
     ],
   });
-  let menuItems: React.ReactElement[] = [];
-  let chips: React.ReactElement[] = [];
+  const [menuItems, setMenuItems] = React.useState<React.ReactElement[]>([]);
+  const [chips, setChips] = React.useState<React.ReactElement[]>([]);
   let itemsNotInCategories: React.ReactElement[] = [];
 
   if (!items.loading) {
     items = items.data.getItemsNotInCategory;
     if (items instanceof Array) {
-      console.log(items);
       itemsNotInCategories = items.map(({ name, id }) => (
         <MenuItem key={id} value={id}>
           {name}
@@ -96,42 +96,59 @@ function MenuDisplay({ show }: { show: boolean }) {
       ));
     }
   }
-  if (!categories.loading) {
-    categories = categories.data.getCategories;
-    if (categories instanceof Array) {
-      type ItemType = {
-        name: string;
-        id: string;
-      };
-      type CategoryType = {
-        items: Array<ItemType>;
-      };
-      menuItems = categories.map(({ id, name }) => {
-        return (
-          <MenuItem key={id} value={id}>
-            {name}
-          </MenuItem>
+  const handleDelete = (id: string) => (
+    e: React.SyntheticEvent<EventTarget>
+  ) => {
+    console.log(id);
+  };
+  React.useEffect(() => {
+    if (!categories.loading) {
+      const getCategories = categories.data.getCategories;
+      if (getCategories instanceof Array) {
+        type ItemType = {
+          name: string;
+          id: string;
+        };
+        type CategoryType = {
+          items: Array<ItemType>;
+          desc: string;
+          name: string;
+        };
+        setMenuItems(
+          getCategories.map(({ id, name }) => {
+            return (
+              <MenuItem key={id} value={id}>
+                {name}
+              </MenuItem>
+            );
+          })
         );
-      });
-      const currCategoryObject: CategoryType = categories.find(
-        ({ id }) => id === currCategory
-      );
-      if (currCategoryObject && currCategoryObject.items) {
-        chips = currCategoryObject.items.map((item) => (
-          <Chip
-            size="medium"
-            label={
-              item.name.length <= 20
-                ? item.name
-                : item.name.substring(0, 20) + "..."
-            }
-            key={item.id}
-            // onDelete={handleDelete}
-          />
-        ));
+        const currCategoryObject: CategoryType = getCategories.find(
+          ({ id }) => id === currCategory
+        );
+        if (currCategoryObject && currCategoryObject.items) {
+          setChips(
+            currCategoryObject.items.map((item) => (
+              <Chip
+                size="medium"
+                label={
+                  item.name.length <= 20
+                    ? item.name
+                    : item.name.substring(0, 20) + "..."
+                }
+                key={item.id}
+                onDelete={handleDelete(item.id)}
+              />
+            ))
+          );
+          editCategoryDesc(
+            currCategoryObject.desc ? currCategoryObject.desc : ""
+          );
+          editCategoryName(currCategoryObject.name);
+        }
       }
     }
-  }
+  }, [categories, currCategory]);
 
   const onSubmitNewCategory = (event: React.SyntheticEvent<EventTarget>) => {
     event.preventDefault();
@@ -177,7 +194,7 @@ function MenuDisplay({ show }: { show: boolean }) {
 
   if (!show) return null;
   return (
-    <Container maxWidth="lg" className={classes.root}>
+    <Container maxWidth="md" className={classes.root}>
       {items instanceof Array && !!items.length && (
         <Alert severity="info" variant="outlined" className={classes.alert}>
           {items instanceof Array && items.length === 1
@@ -187,8 +204,11 @@ function MenuDisplay({ show }: { show: boolean }) {
               } items that have not been added to any categories.`}
         </Alert>
       )}
-      <Grid container spacing={3}>
-        <Grid item xs={12} md>
+      <Grid container spacing={6}>
+        <Grid item md={12} className={classes.containerItem}>
+          <Typography component="h2" variant="h6">
+            Add a New Category
+          </Typography>
           <form noValidate onSubmit={onSubmitNewCategory}>
             <TextField
               variant="outlined"
@@ -215,7 +235,10 @@ function MenuDisplay({ show }: { show: boolean }) {
           </form>
         </Grid>
 
-        <Grid item xs={12} md>
+        <Grid item md={12} className={classes.containerItem}>
+          <Typography component="h2" variant="h6">
+            Edit an Existing Category
+          </Typography>
           <form noValidate onSubmit={onSubmitEditCategory}>
             <TextField
               label="Select category"
@@ -232,7 +255,7 @@ function MenuDisplay({ show }: { show: boolean }) {
               variant="outlined"
               margin="normal"
               fullWidth
-              label="New Category Name"
+              label="Category Name"
               value={editedCategoryName}
               onChange={({ target }) => editCategoryName(target.value)}
             />
@@ -240,7 +263,7 @@ function MenuDisplay({ show }: { show: boolean }) {
               variant="outlined"
               margin="normal"
               fullWidth
-              label="New Category Description"
+              label="Category Description"
               value={editedCategoryDesc}
               multiline
               onChange={({ target }) => editCategoryDesc(target.value)}
