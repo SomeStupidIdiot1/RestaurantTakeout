@@ -23,7 +23,11 @@ import Tooltip from "@material-ui/core/Tooltip";
 import TextField from "@material-ui/core/TextField";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { GET_ITEMS, GET_ITEMS_NOT_IN_CATEGORY } from "../../../queries";
+import {
+  GET_ITEMS,
+  GET_ITEMS_NOT_IN_CATEGORY,
+  GET_CATEGORIES,
+} from "../../../queries";
 import { DELETE_ITEM, DELETE_ALL_ITEMS } from "../../../mutations";
 
 interface Data {
@@ -270,6 +274,7 @@ export default function ItemTable({
     refetchQueries: [
       { query: GET_ITEMS },
       { query: GET_ITEMS_NOT_IN_CATEGORY },
+      { query: GET_CATEGORIES },
     ],
   });
   const [deleteAllItems] = useMutation(DELETE_ALL_ITEMS, {
@@ -283,6 +288,7 @@ export default function ItemTable({
     refetchQueries: [
       { query: GET_ITEMS },
       { query: GET_ITEMS_NOT_IN_CATEGORY },
+      { query: GET_CATEGORIES },
     ],
   });
   React.useEffect(() => {

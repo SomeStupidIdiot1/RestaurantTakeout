@@ -170,3 +170,17 @@ export const EDIT_CATEGORY = gql`
     }
   }
 `;
+export const REMOVE_ITEM_FROM_CATEGORY = gql`
+  mutation removeItemFromCategory($id: ID!, $itemId: ID!) {
+    removeItemFromCategory(id: $id, itemId: $itemId) {
+      name
+      desc
+      items {
+        name
+        cost
+        description
+      }
+      id
+    }
+  }
+`;

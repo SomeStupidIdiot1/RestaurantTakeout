@@ -5,6 +5,7 @@ import {
   ADD_CATEGORY,
   ADD_ITEM_TO_CATEGORY,
   EDIT_CATEGORY,
+  REMOVE_ITEM_FROM_CATEGORY,
 } from "../../../mutations";
 import {
   Container,
@@ -29,7 +30,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     marginTop: theme.spacing(4),
   },
-  alert: { margin: theme.spacing(4) },
   chip: {
     background: theme.palette.grey[100],
     minHeight: 100,
@@ -56,23 +56,23 @@ function MenuDisplay({ show }: { show: boolean }) {
   const [editedCategoryDesc, editCategoryDesc] = React.useState("");
   const [selectedItems, changeSelectedItems] = React.useState<string[]>([]);
 
-  let items = useQuery(GET_ITEMS_NOT_IN_CATEGORY);
-  let categories = useQuery(GET_CATEGORIES);
-  let [addCategory] = useMutation(ADD_CATEGORY, {
+  const items = useQuery(GET_ITEMS_NOT_IN_CATEGORY);
+  const categories = useQuery(GET_CATEGORIES);
+  const [addCategory] = useMutation(ADD_CATEGORY, {
     onError: (error) => {
       if (error.graphQLErrors.length)
         setResponse(error.graphQLErrors[0].message);
     },
     refetchQueries: [{ query: GET_CATEGORIES }],
   });
-  let [editCategory] = useMutation(EDIT_CATEGORY, {
+  const [editCategory] = useMutation(EDIT_CATEGORY, {
     onError: (error) => {
       if (error.graphQLErrors.length)
         setResponse(error.graphQLErrors[0].message);
     },
     refetchQueries: [{ query: GET_CATEGORIES }],
   });
-  let [addItemsToCategory] = useMutation(ADD_ITEM_TO_CATEGORY, {
+  const [addItemsToCategory] = useMutation(ADD_ITEM_TO_CATEGORY, {
     onError: (error) => {
       if (error.graphQLErrors.length)
         setResponse(error.graphQLErrors[0].message);
@@ -82,27 +82,49 @@ function MenuDisplay({ show }: { show: boolean }) {
       { query: GET_CATEGORIES },
     ],
   });
+  const [removeItemFromCategory] = useMutation(REMOVE_ITEM_FROM_CATEGORY, {
+    onError: (error) => {
+      if (error.graphQLErrors.length)
+        setResponse(error.graphQLErrors[0].message);
+    },
+    refetchQueries: [
+      { query: GET_ITEMS_NOT_IN_CATEGORY },
+      { query: GET_CATEGORIES },
+    ],
+  });
+
   const [menuItems, setMenuItems] = React.useState<React.ReactElement[]>([]);
   const [chips, setChips] = React.useState<React.ReactElement[]>([]);
-  let itemsNotInCategories: React.ReactElement[] = [];
-
-  if (!items.loading) {
-    items = items.data.getItemsNotInCategory;
-    if (items instanceof Array) {
-      itemsNotInCategories = items.map(({ name, id }) => (
-        <MenuItem key={id} value={id}>
-          {name}
-        </MenuItem>
-      ));
+  const [itemsNotInCategories, setItemsNotInCategories] = React.useState<
+    React.ReactElement[]
+  >([]);
+  React.useEffect(() => {
+    if (!items.loading) {
+      const getItemsNotInCategory = items.data.getItemsNotInCategory;
+      if (getItemsNotInCategory instanceof Array) {
+        setItemsNotInCategories(
+          getItemsNotInCategory.map(({ name, id }) => (
+            <MenuItem key={id} value={id}>
+              {name}
+            </MenuItem>
+          ))
+        );
+      }
     }
-  }
-  const handleDelete = (id: string) => (
-    e: React.SyntheticEvent<EventTarget>
-  ) => {
-    console.log(id);
-  };
+  }, [items]);
+
   React.useEffect(() => {
     if (!categories.loading) {
+      const handleDelete = (id: string) => () => {
+        removeItemFromCategory({
+          variables: {
+            id: currCategory,
+            itemId: id,
+          },
+        }).then((res) => {
+          if (res) setResponse("Successfully removed item from category");
+        });
+      };
       const getCategories = categories.data.getCategories;
       if (getCategories instanceof Array) {
         type ItemType = {
@@ -148,7 +170,7 @@ function MenuDisplay({ show }: { show: boolean }) {
         }
       }
     }
-  }, [categories, currCategory]);
+  }, [categories, currCategory, removeItemFromCategory]);
 
   const onSubmitNewCategory = (event: React.SyntheticEvent<EventTarget>) => {
     event.preventDefault();
@@ -179,8 +201,6 @@ function MenuDisplay({ show }: { show: boolean }) {
       }).then((res) => {
         if (res) setResponse("Successfully edited the category");
       });
-      editCategoryDesc("");
-      editCategoryName("");
     }
     if (selectedItems.length) {
       addItemsToCategory({
@@ -195,21 +215,12 @@ function MenuDisplay({ show }: { show: boolean }) {
   if (!show) return null;
   return (
     <Container maxWidth="md" className={classes.root}>
-      {items instanceof Array && !!items.length && (
-        <Alert severity="info" variant="outlined" className={classes.alert}>
-          {items instanceof Array && items.length === 1
-            ? "There is 1 item that has not been added to any categories."
-            : `There are ${
-                items instanceof Array && items.length
-              } items that have not been added to any categories.`}
-        </Alert>
-      )}
       <Grid container spacing={6}>
         <Grid item md={12} className={classes.containerItem}>
-          <Typography component="h2" variant="h6">
-            Add a New Category
-          </Typography>
           <form noValidate onSubmit={onSubmitNewCategory}>
+            <Typography component="h2" variant="h6">
+              Add a New Category
+            </Typography>
             <TextField
               variant="outlined"
               margin="normal"
@@ -234,12 +245,11 @@ function MenuDisplay({ show }: { show: boolean }) {
             </Button>
           </form>
         </Grid>
-
         <Grid item md={12} className={classes.containerItem}>
-          <Typography component="h2" variant="h6">
-            Edit an Existing Category
-          </Typography>
           <form noValidate onSubmit={onSubmitEditCategory}>
+            <Typography component="h2" variant="h6">
+              Edit an Existing Category
+            </Typography>
             <TextField
               label="Select category"
               select
@@ -269,7 +279,11 @@ function MenuDisplay({ show }: { show: boolean }) {
               onChange={({ target }) => editCategoryDesc(target.value)}
             />
             <InputLabel id="add-items-to-category" className={classes.label}>
-              Add Items
+              {itemsNotInCategories.length === 1
+                ? "Add an item to the category (1 item total)"
+                : !itemsNotInCategories.length
+                ? "All items are in categories already."
+                : `Add item(s) to the category (${itemsNotInCategories.length} total)`}
             </InputLabel>
             <Select
               labelId="add-items-to-category"
@@ -291,6 +305,7 @@ function MenuDisplay({ show }: { show: boolean }) {
             >
               {itemsNotInCategories}
             </Select>
+
             <Typography
               component="h3"
               variant="subtitle1"
@@ -305,6 +320,7 @@ function MenuDisplay({ show }: { show: boolean }) {
           </form>
         </Grid>
       </Grid>
+
       <Snackbar
         open={!!response}
         autoHideDuration={6000}
