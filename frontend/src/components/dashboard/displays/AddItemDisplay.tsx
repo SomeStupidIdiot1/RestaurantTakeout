@@ -4,16 +4,28 @@ import {
   Grid,
   Container,
   Button,
-  Input,
   Snackbar,
   FormLabel,
 } from "@material-ui/core";
+import { FilePond, registerPlugin, File } from "react-filepond";
 import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/react-hooks";
 import { ADD_ITEM } from "../../../mutations";
 import { GET_ITEMS, GET_ITEMS_NOT_IN_CATEGORY } from "../../../queries";
 import ItemTable from "./ItemTable";
+import "filepond/dist/filepond.min.css";
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
+import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+import FilePondPluginImageResize from "filepond-plugin-image-resize";
+registerPlugin(
+  FilePondPluginImagePreview,
+  FilePondPluginImageExifOrientation,
+  FilePondPluginFileValidateType,
+  FilePondPluginImageResize
+);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,7 +48,7 @@ function AddItemDisplay({ show }: { show: boolean }) {
   const [response, setResponse] = useState("");
   const classes = useStyles();
   const [focus, setFocus] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File[]>([]);
   const [uploadFileValue, setUploadFileValue] = useState("");
   const [addItem] = useMutation(ADD_ITEM, {
     update: (store, response) => {
@@ -133,33 +145,27 @@ function AddItemDisplay({ show }: { show: boolean }) {
             <Grid item xs={12}>
               <FormLabel htmlFor="file-upload">
                 {"Upload image (not required) "}
-                <Input
-                  name="file"
-                  type="file"
-                  id="file-upload"
-                  value={uploadFileValue}
-                  inputProps={{}}
-                  onChange={(e) => {
-                    const target = e.target as HTMLInputElement;
-                    const file: File = (target.files as FileList)[0];
-                    if (["image/jpeg", "image/png"].includes(file.type)) {
-                      setFile(file);
-                      setUploadFileValue(target.value);
-                    } else
-                      setResponse(
-                        "You can only upload images with png, jpg, or jpeg file extensions."
-                      );
-                  }}
-                  disableUnderline
-                />
               </FormLabel>
+              <FilePond
+                files={file}
+                // @ts-ignore
+                imagePreviewHeight={300}
+                imageResizeTargetHeight={300}
+                imagePreviewMaxFileSize="2MB"
+                imageResizeMode="cover"
+                acceptedFileTypes={["image/*"]}
+                allowMultiple={false}
+                onupdatefiles={(fileItems) => {
+                  if (fileItems.length) setFile(fileItems);
+                }}
+              />
               <Button
                 type="button"
                 variant="outlined"
                 color="secondary"
                 onClick={() => {
                   setUploadFileValue("");
-                  setFile(null);
+                  setFile([]);
                 }}
                 size="small"
               >
