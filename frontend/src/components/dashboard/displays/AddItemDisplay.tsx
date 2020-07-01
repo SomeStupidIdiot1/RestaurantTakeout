@@ -19,11 +19,14 @@ const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(4),
   },
-  topTextField: {
+  firstItem: {
     marginTop: 0,
   },
-  input: {
-    margin: theme.spacing(1, 0),
+  lastItem: {
+    marginTop: theme.spacing(2),
+  },
+  desc: {
+    marginBottom: theme.spacing(2),
   },
 }));
 function AddItemDisplay({ show }: { show: boolean }) {
@@ -34,6 +37,7 @@ function AddItemDisplay({ show }: { show: boolean }) {
   const classes = useStyles();
   const [focus, setFocus] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [uploadFileValue, setUploadFileValue] = useState("");
   const [addItem] = useMutation(ADD_ITEM, {
     update: (store, response) => {
       type dataType = {
@@ -91,7 +95,7 @@ function AddItemDisplay({ show }: { show: boolean }) {
                 label="Item name"
                 autoFocus
                 value={name}
-                className={classes.topTextField}
+                className={classes.firstItem}
                 onChange={({ target }) => setName(target.value)}
               />
             </Grid>
@@ -122,27 +126,53 @@ function AddItemDisplay({ show }: { show: boolean }) {
                 fullWidth
                 label="Description"
                 value={desc}
+                className={classes.desc}
                 onChange={({ target }) => setDesc(target.value)}
               />
             </Grid>
-            <FormLabel className={classes.input} htmlFor="file-upload">
-              {"Upload image (not required) "}
-              <Input
-                name="file"
-                type="file"
-                id="file-upload"
-                data-cloudinary-field="image_id"
-                data-form-data="{ 'transformation': {'crop':'scale','width':200,'height':200}}"
-                onChange={(e) => {
-                  const target = e.target as HTMLInputElement;
-                  const file: File = (target.files as FileList)[0];
-                  setFile(file);
+            <Grid item xs={12}>
+              <FormLabel htmlFor="file-upload">
+                {"Upload image (not required) "}
+                <Input
+                  name="file"
+                  type="file"
+                  id="file-upload"
+                  value={uploadFileValue}
+                  inputProps={{}}
+                  onChange={(e) => {
+                    const target = e.target as HTMLInputElement;
+                    const file: File = (target.files as FileList)[0];
+                    if (["image/jpeg", "image/png"].includes(file.type)) {
+                      setFile(file);
+                      setUploadFileValue(target.value);
+                    } else
+                      setResponse(
+                        "You can only upload images with png, jpg, or jpeg file extensions."
+                      );
+                  }}
+                  disableUnderline
+                />
+              </FormLabel>
+              <Button
+                type="button"
+                variant="outlined"
+                color="secondary"
+                onClick={() => {
+                  setUploadFileValue("");
+                  setFile(null);
                 }}
-                disableUnderline
-              />
-            </FormLabel>
-
-            <Button type="submit" fullWidth variant="contained" color="primary">
+                size="small"
+              >
+                Reset upload file
+              </Button>
+            </Grid>
+            <Button
+              className={classes.lastItem}
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+            >
               Add new item
             </Button>
           </Grid>
