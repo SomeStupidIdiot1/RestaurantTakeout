@@ -17,6 +17,7 @@ export const ADD_ITEM = gql`
       description
       cost
       id
+      imgUrl
     }
   }
 `;
