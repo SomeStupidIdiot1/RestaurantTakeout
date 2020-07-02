@@ -169,7 +169,6 @@ function AddItemDisplay({ show }: { show: boolean }) {
                 getFileEncodeBase64String
                 onupdatefiles={(fileItems) => {
                   if (fileItems.length && fileItems[0]) {
-                    console.log(fileItems);
                     setFile(fileItems);
                   }
                 }}
