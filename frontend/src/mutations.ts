@@ -1,8 +1,18 @@
 import gql from "graphql-tag";
 
 export const ADD_ITEM = gql`
-  mutation addItem($name: String!, $cost: Float!, $description: String) {
-    addItem(name: $name, cost: $cost, description: $description) {
+  mutation addItem(
+    $name: String!
+    $cost: Float!
+    $description: String
+    $imgStringBase64: String
+  ) {
+    addItem(
+      name: $name
+      cost: $cost
+      description: $description
+      imgStringBase64: $imgStringBase64
+    ) {
       name
       description
       cost

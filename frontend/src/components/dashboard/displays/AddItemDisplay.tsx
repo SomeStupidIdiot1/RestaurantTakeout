@@ -20,11 +20,15 @@ import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orien
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImageResize from "filepond-plugin-image-resize";
+// @ts-ignore
+import FilePondPluginFileEncode from "filepond-plugin-file-encode";
+
 registerPlugin(
   FilePondPluginImagePreview,
   FilePondPluginImageExifOrientation,
   FilePondPluginFileValidateType,
-  FilePondPluginImageResize
+  FilePondPluginImageResize,
+  FilePondPluginFileEncode
 );
 
 const useStyles = makeStyles((theme) => ({
@@ -155,8 +159,12 @@ function AddItemDisplay({ show }: { show: boolean }) {
                 imageResizeMode="cover"
                 acceptedFileTypes={["image/*"]}
                 allowMultiple={false}
+                getFileEncodeBase64String
                 onupdatefiles={(fileItems) => {
-                  if (fileItems.length) setFile(fileItems);
+                  if (fileItems.length && fileItems[0]) {
+                    console.log(fileItems);
+                    setFile(fileItems);
+                  }
                 }}
               />
               <Button

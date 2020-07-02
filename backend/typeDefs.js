@@ -36,7 +36,7 @@ const typeDefs = gql`
     getItemsNotInCategory: [Item]
   }
   type Mutation {
-    addItem(name: String!, cost: Float!, description: String): Item
+    addItem(name: String!, cost: Float!, description: String, imgStringBase64: String): Item
     editItem(id: ID!, name: String, cost: Float, description: String): Item
     deleteItem(id: ID!): Item
     deleteAllItems: Boolean

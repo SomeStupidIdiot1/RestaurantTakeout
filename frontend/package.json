@@ -27,6 +27,7 @@
     "apollo-link-http": "^1.5.17",
     "clsx": "^1.1.1",
     "filepond": "^4.18.0",
+    "filepond-plugin-file-encode": "^2.1.6",
     "filepond-plugin-file-validate-type": "^1.2.5",
     "filepond-plugin-image-crop": "^2.0.4",
     "filepond-plugin-image-exif-orientation": "^1.0.9",
