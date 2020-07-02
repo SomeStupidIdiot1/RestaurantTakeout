@@ -90,11 +90,19 @@ function AddItemDisplay({ show }: { show: boolean }) {
     else {
       setResponse("Successfully added an item");
       addItem({
-        variables: { name, cost: parseFloat(cost), description: desc },
+        variables: {
+          name,
+          cost: parseFloat(cost),
+          description: desc,
+          imgStringBase64:
+            // @ts-ignore
+            file.length && file[0] ? file[0].getFileEncodeBase64String() : "",
+        },
       });
       setName("");
       setCost("");
       setDesc("");
+      setFile([]);
     }
   };
   return (
