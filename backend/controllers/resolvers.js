@@ -1,4 +1,8 @@
-const { UserInputError, AuthenticationError } = require("apollo-server");
+const {
+  UserInputError,
+  AuthenticationError,
+  ApolloError,
+} = require("apollo-server");
 const { JWT_SECRET } = require("../util/config");
 const jwt = require("jsonwebtoken");
 const Item = require("../models/Item");
@@ -54,6 +58,7 @@ const resolvers = {
           (err, res) => {
             if (err) throw new UserInputError("Can't accept the image");
             args.imgUrl = res.url;
+            args.imgId = res.public_id;
           }
         );
       }
@@ -134,6 +139,7 @@ const resolvers = {
         throw new AuthenticationError(
           "this category does not belong to this user"
         );
+
       return await Category.findByIdAndUpdate(args.id, {
         $pull: { items: args.itemId },
       }).populate("items");
@@ -142,11 +148,18 @@ const resolvers = {
       if (!context.currentUser) throw new AuthenticationError("not logged in");
       if (!context.currentUser.items.find((val) => String(val._id) === args.id))
         throw new AuthenticationError("this item does not belong to this user");
+      const publicId = (await Item.findById(args.id)).imgId;
+      if (publicId) {
+        cloudinary.uploader.destroy(publicId, (err) => {
+          if (err) throw new ApolloError("Couldn't delete image");
+        });
+      }
       return await Item.findByIdAndDelete(args.id);
     },
     deleteAllItems: async (_, __, context) => {
       if (!context.currentUser) throw new AuthenticationError("not logged in");
       const ids = context.currentUser.items.map(({ _id }) => _id);
+      await cloudinary.api.delete_resources_by_prefix(context.currentUser._id);
       await Item.deleteMany({ _id: { $in: ids } });
       return true;
     },

@@ -16,6 +16,9 @@ const schema = new mongoose.Schema({
   imgUrl: {
     type: String,
   },
+  imgId: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Item", schema);
