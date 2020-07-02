@@ -4,10 +4,16 @@ const jwt = require("jsonwebtoken");
 const Item = require("../models/Item");
 const User = require("../models/User");
 const Category = require("../models/Category");
+const cloudinary = require("cloudinary").v2;
 const bcrypt = require("bcrypt");
 const SALT_ROUNDS = 10;
 const EMAIL_REGEX = /^\S+@\S+$/;
 const PASS_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,40}$/;
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 const resolvers = {
   Query: {
     me: (_, __, context) => context.currentUser,
@@ -39,7 +45,20 @@ const resolvers = {
   Mutation: {
     addItem: async (_, args, context) => {
       const user = context.currentUser;
+      if (args.imgStringBase64) {
+        cloudinary.uploader.upload(
+          args.imgStringBase64,
+          {
+            folder: context.currentUser._id,
+          },
+          (err, res) => {
+            if (err) throw new UserInputError("Can't accept the image");
+            args.imgUrl = res.url;
+          }
+        );
+      }
       if (!user) throw new AuthenticationError("not logged in");
+      delete args.imgStringBase64;
       let item = new Item({ ...args });
       try {
         item = await item.save();

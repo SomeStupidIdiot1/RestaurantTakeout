@@ -95,7 +95,13 @@ function AddItemDisplay({ show }: { show: boolean }) {
           description: desc,
           imgStringBase64:
             // @ts-ignore
-            file.length && file[0] ? file[0].getFileEncodeBase64String() : "",
+            file.length && file[0]
+              ? `data:${
+                  // @ts-ignore
+                  file[0].file.type
+                  // @ts-ignore
+                };base64,${file[0].getFileEncodeBase64String()}`
+              : "",
         },
       });
       setName("");
@@ -161,7 +167,6 @@ function AddItemDisplay({ show }: { show: boolean }) {
                 files={file}
                 // @ts-ignore
                 imagePreviewHeight={300}
-                imageResizeTargetHeight={300}
                 imagePreviewMaxFileSize="2MB"
                 imageResizeMode="cover"
                 acceptedFileTypes={["image/*"]}
@@ -173,17 +178,6 @@ function AddItemDisplay({ show }: { show: boolean }) {
                   }
                 }}
               />
-              <Button
-                type="button"
-                variant="outlined"
-                color="secondary"
-                onClick={() => {
-                  setFile([]);
-                }}
-                size="small"
-              >
-                Reset upload file
-              </Button>
             </Grid>
             <Button
               className={classes.lastItem}

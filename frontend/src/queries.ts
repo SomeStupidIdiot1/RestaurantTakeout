@@ -28,6 +28,7 @@ export const GET_ITEMS = gql`
       description
       cost
       id
+      imgUrl
     }
   }
 `;

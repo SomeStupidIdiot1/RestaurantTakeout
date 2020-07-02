@@ -13,6 +13,9 @@ const schema = new mongoose.Schema({
     required: true,
     min: 0,
   },
+  imgUrl: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Item", schema);
