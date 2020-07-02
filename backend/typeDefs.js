@@ -3,8 +3,10 @@ const gql = require("graphql-tag");
 const typeDefs = gql`
   type Item {
     name: String!
-    description: String
+    description: String!
     cost: Float!
+    imgUrl: String
+    imgId: String
     id: ID!
   }
   type User {

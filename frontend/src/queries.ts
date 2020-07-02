@@ -12,6 +12,7 @@ export const GET_ME = gql`
         description
         cost
         id
+        imgUrl
       }
       id
       facebook
@@ -39,6 +40,7 @@ export const GET_ITEMS_NOT_IN_CATEGORY = gql`
       description
       cost
       id
+      imgUrl
     }
   }
 `;
@@ -53,6 +55,7 @@ export const GET_CATEGORIES = gql`
         description
         cost
         id
+        imgUrl
       }
     }
   }

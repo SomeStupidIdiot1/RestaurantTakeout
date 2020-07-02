@@ -49,22 +49,21 @@ const resolvers = {
   Mutation: {
     addItem: async (_, args, context) => {
       const user = context.currentUser;
-      if (args.imgStringBase64) {
-        cloudinary.uploader.upload(
-          args.imgStringBase64,
-          {
-            folder: context.currentUser._id,
-          },
-          (err, res) => {
-            if (err) throw new UserInputError("Can't accept the image");
-            args.imgUrl = res.url;
-            args.imgId = res.public_id;
-          }
-        );
-      }
       if (!user) throw new AuthenticationError("not logged in");
-      delete args.imgStringBase64;
-      let item = new Item({ ...args });
+      const newArgs = { ...args };
+      if (args.imgStringBase64) {
+        try {
+          const res = await cloudinary.uploader.upload(args.imgStringBase64, {
+            folder: context.currentUser._id,
+          });
+          newArgs.imgUrl = res.url;
+          newArgs.imgId = res.public_id;
+        } catch (e) {
+          if (e) throw new UserInputError("Can't accept the image");
+        }
+      }
+      delete newArgs.imgStringBase64;
+      let item = new Item({ ...newArgs });
       try {
         item = await item.save();
         await User.findOneAndUpdate(
@@ -150,7 +149,7 @@ const resolvers = {
         throw new AuthenticationError("this item does not belong to this user");
       const publicId = (await Item.findById(args.id)).imgId;
       if (publicId) {
-        cloudinary.uploader.destroy(publicId, (err) => {
+        await cloudinary.uploader.destroy(publicId, (err) => {
           if (err) throw new ApolloError("Couldn't delete image");
         });
       }
@@ -159,7 +158,10 @@ const resolvers = {
     deleteAllItems: async (_, __, context) => {
       if (!context.currentUser) throw new AuthenticationError("not logged in");
       const ids = context.currentUser.items.map(({ _id }) => _id);
-      await cloudinary.api.delete_resources_by_prefix(context.currentUser._id);
+      console.log(context.currentUser._id);
+      await cloudinary.api.delete_resources_by_prefix(
+        `${context.currentUser._id}/`
+      );
       await Item.deleteMany({ _id: { $in: ids } });
       return true;
     },
