@@ -53,7 +53,6 @@ function AddItemDisplay({ show }: { show: boolean }) {
   const classes = useStyles();
   const [focus, setFocus] = useState<string | null>(null);
   const [file, setFile] = useState<File[]>([]);
-  const [uploadFileValue, setUploadFileValue] = useState("");
   const [addItem] = useMutation(ADD_ITEM, {
     update: (store, response) => {
       type dataType = {
@@ -180,7 +179,6 @@ function AddItemDisplay({ show }: { show: boolean }) {
                 variant="outlined"
                 color="secondary"
                 onClick={() => {
-                  setUploadFileValue("");
                   setFile([]);
                 }}
                 size="small"
