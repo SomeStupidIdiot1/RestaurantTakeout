@@ -54,6 +54,7 @@ type dataType = {
       description: string;
       cost: number;
       imgUrl: string;
+      id: string;
     }[];
   }[];
   facebook?: string;
@@ -137,7 +138,7 @@ const FrontPage = (props: propType) => {
       </AppBar>
       <main>
         <div className={classes.spacer} />
-        <Container className={classes.container} maxWidth="xl">
+        <Container className={classes.container} maxWidth="lg">
           {open && <Menu categories={data.categories} />}
         </Container>
       </main>

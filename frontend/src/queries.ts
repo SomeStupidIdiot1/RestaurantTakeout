@@ -76,6 +76,7 @@ export const GET_USER = gql`
           description
           cost
           imgUrl
+          id
         }
       }
       facebook
