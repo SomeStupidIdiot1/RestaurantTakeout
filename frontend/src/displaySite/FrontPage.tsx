@@ -17,7 +17,6 @@ import YouTubeIcon from "@material-ui/icons/YouTube";
 import TwitterIcon from "@material-ui/icons/Twitter";
 
 const useStyles = makeStyles((theme) => ({
-  root: { display: "flex" },
   appbar: {
     padding: theme.spacing(1),
     background: "white",
@@ -42,25 +41,25 @@ type propType = {
   };
 };
 type dataType = {
-  email: String;
-  restaurantName: String;
-  address?: String;
-  phone?: String;
+  email: string;
+  restaurantName: string;
+  address?: string;
+  phone?: string;
   categories: {
-    name: String;
-    desc: String;
-    id: String;
+    name: string;
+    desc: string;
+    id: string;
     items: {
-      name: String;
-      description: String;
+      name: string;
+      description: string;
       cost: number;
-      imgUrl: String;
-    };
-  };
-  facebook?: String;
-  youtube?: String;
-  instagram?: String;
-  twitter?: String;
+      imgUrl: string;
+    }[];
+  }[];
+  facebook?: string;
+  youtube?: string;
+  instagram?: string;
+  twitter?: string;
 };
 const FrontPage = (props: propType) => {
   const user = useQuery(GET_USER, {
@@ -87,7 +86,7 @@ const FrontPage = (props: propType) => {
 
   if (!data) return <div></div>;
   return (
-    <div className={classes.root}>
+    <div>
       <AppBar className={classes.appbar} position="absolute">
         <Toolbar>
           <Button
@@ -137,8 +136,10 @@ const FrontPage = (props: propType) => {
         </Toolbar>
       </AppBar>
       <main>
-        <div className={classes.spacer}></div>
-        <Container className={classes.container}>{open && <Menu />}</Container>
+        <div className={classes.spacer} />
+        <Container className={classes.container} maxWidth="xl">
+          {open && <Menu categories={data.categories} />}
+        </Container>
       </main>
     </div>
   );
