@@ -26,8 +26,12 @@ const useStyles = makeStyles((theme) => ({
   container: {
     padding: theme.spacing(4),
   },
-  separator: {
+  restaurantName: {
     flexGrow: 1,
+    textAlign: "center",
+  },
+  button: {
+    margin: theme.spacing(0, 2),
   },
 }));
 type propType = {
@@ -80,15 +84,36 @@ const FrontPage = (props: propType) => {
 
   const classes = useStyles();
   const [open, setOpen] = React.useState("Menu");
-  if (!data) return <div>404 error</div>;
+
+  if (!data) return <div></div>;
   return (
     <div className={classes.root}>
       <AppBar className={classes.appbar} position="absolute">
         <Toolbar>
-          <Button onClick={() => setOpen("Menu")} color="primary">
-            <Typography variant="h5">Menu</Typography>
+          <Button
+            onClick={() => setOpen("Menu")}
+            color="primary"
+            variant="outlined"
+            className={classes.button}
+          >
+            <Typography variant="h6">Menu</Typography>
           </Button>
-          <div className={classes.separator}></div>
+          <Button
+            onClick={() => setOpen("Contacts")}
+            color="primary"
+            variant="outlined"
+            className={classes.button}
+          >
+            <Typography variant="h6">Contacts</Typography>
+          </Button>
+          <Typography
+            color="primary"
+            component="h1"
+            variant="h2"
+            className={classes.restaurantName}
+          >
+            {data.restaurantName}
+          </Typography>
           {data && data.instagram && (
             <IconButton target="_blank" href={`${data.instagram}`}>
               <InstagramIcon />
