@@ -60,3 +60,36 @@ export const GET_CATEGORIES = gql`
     }
   }
 `;
+export const GET_USER = gql`
+  query getUser($id: ID!) {
+    getUser(id: $id) {
+      email
+      restaurantName
+      address
+      phone
+      categories {
+        name
+        desc
+        id
+        items {
+          name
+          description
+          cost
+          imgUrl
+        }
+      }
+      facebook
+      youtube
+      instagram
+      twitter
+      id
+    }
+  }
+`;
+export const GET_ID = gql`
+  query {
+    me {
+      id
+    }
+  }
+`;

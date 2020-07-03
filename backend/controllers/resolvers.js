@@ -21,6 +21,11 @@ cloudinary.config({
 const resolvers = {
   Query: {
     me: (_, __, context) => context.currentUser,
+    getUser: (_, args) => {
+      return User.findById(args.id)
+        .populate("items")
+        .populate({ path: "categories", populate: { path: "items" } });
+    },
     getItems: (_, __, context) => {
       const user = context.currentUser;
       if (!user) throw new AuthenticationError("not logged in");

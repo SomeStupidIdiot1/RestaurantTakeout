@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@apollo/react-hooks";
-// import {  } from "../queries";
+import { GET_USER } from "../queries";
 
 type propType = {
   match: {
@@ -10,7 +10,9 @@ type propType = {
   };
 };
 const FrontPage = (props: propType) => {
-  console.log(props.match.params.repo);
-  return <></>;
+  const user = useQuery(GET_USER, {
+    variables: { id: props.match.params.repo },
+  });
+  return <div>{JSON.stringify(user.loading ? null : user.data)}</div>;
 };
 export default FrontPage;
