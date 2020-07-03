@@ -1,7 +1,35 @@
 import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { GET_USER } from "../queries";
+import Menu from "./Menu";
+import {
+  AppBar,
+  Typography,
+  Container,
+  Button,
+  Toolbar,
+  IconButton,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import InstagramIcon from "@material-ui/icons/Instagram";
+import FacebookIcon from "@material-ui/icons/Facebook";
+import YouTubeIcon from "@material-ui/icons/YouTube";
+import TwitterIcon from "@material-ui/icons/Twitter";
 
+const useStyles = makeStyles((theme) => ({
+  root: { display: "flex" },
+  appbar: {
+    padding: theme.spacing(1),
+    background: "white",
+  },
+  spacer: theme.mixins.toolbar,
+  container: {
+    padding: theme.spacing(4),
+  },
+  separator: {
+    flexGrow: 1,
+  },
+}));
 type propType = {
   match: {
     params: {
@@ -9,10 +37,87 @@ type propType = {
     };
   };
 };
+type dataType = {
+  email: String;
+  restaurantName: String;
+  address?: String;
+  phone?: String;
+  categories: {
+    name: String;
+    desc: String;
+    id: String;
+    items: {
+      name: String;
+      description: String;
+      cost: number;
+      imgUrl: String;
+    };
+  };
+  facebook?: String;
+  youtube?: String;
+  instagram?: String;
+  twitter?: String;
+};
 const FrontPage = (props: propType) => {
   const user = useQuery(GET_USER, {
     variables: { id: props.match.params.repo },
   });
-  return <div>{JSON.stringify(user.loading ? null : user.data)}</div>;
+  const [data, setData] = React.useState<null | dataType>(null);
+  React.useEffect(() => {
+    if (!user.loading && user.data) {
+      let data = (user.data as { getUser: dataType }).getUser;
+      if (data.facebook && !data.facebook?.match(/^http(s)?:/))
+        data.facebook = "https://" + data.facebook;
+      if (data.youtube && !data.youtube?.match(/^http(s)?:/))
+        data.youtube = "https://" + data.youtube;
+      if (data.instagram && !data.instagram?.match(/^http(s)?:/))
+        data.instagram = "https://" + data.instagram;
+      if (data.twitter && !data.twitter?.match(/^http(s)?:/))
+        data.twitter = "https://" + data.twitter;
+      setData(data);
+    }
+  }, [user]);
+
+  const classes = useStyles();
+  const [open, setOpen] = React.useState("Menu");
+  if (!data) return <div>404 error</div>;
+  return (
+    <div className={classes.root}>
+      <AppBar className={classes.appbar} position="absolute">
+        <Toolbar>
+          <Button onClick={() => setOpen("Menu")} color="primary">
+            <Typography variant="h5">Menu</Typography>
+          </Button>
+          <div className={classes.separator}></div>
+          {data && data.instagram && (
+            <IconButton target="_blank" href={`${data.instagram}`}>
+              <InstagramIcon />
+            </IconButton>
+          )}
+          {data && data.twitter && (
+            <IconButton target="_blank" href={`${data.twitter}`}>
+              <TwitterIcon />
+            </IconButton>
+          )}
+          {data && data.youtube && (
+            <IconButton target="_blank" href={`${data.youtube}`}>
+              <YouTubeIcon />
+            </IconButton>
+          )}
+          {data && data.facebook && (
+            <IconButton target="_blank" href={`${data.facebook}`}>
+              <FacebookIcon />
+            </IconButton>
+          )}
+        </Toolbar>
+      </AppBar>
+      <main>
+        <div className={classes.spacer}></div>
+        <Container className={classes.container}>{open && <Menu />}</Container>
+      </main>
+    </div>
+  );
+
+  // return <div>{JSON.stringify(user.loading ? null : user.data)}</div>;
 };
 export default FrontPage;
