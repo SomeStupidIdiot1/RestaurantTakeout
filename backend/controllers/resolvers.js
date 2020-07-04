@@ -163,7 +163,6 @@ const resolvers = {
     deleteAllItems: async (_, __, context) => {
       if (!context.currentUser) throw new AuthenticationError("not logged in");
       const ids = context.currentUser.items.map(({ _id }) => _id);
-      console.log(context.currentUser._id);
       await cloudinary.api.delete_resources_by_prefix(
         `${context.currentUser._id}/`
       );
