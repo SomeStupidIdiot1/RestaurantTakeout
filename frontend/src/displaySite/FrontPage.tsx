@@ -139,7 +139,7 @@ const FrontPage = (props: propType) => {
       <main>
         <div className={classes.spacer} />
         <Container className={classes.container} maxWidth="lg">
-          {open && <Menu categories={data.categories} />}
+          {open === "Menu" && <Menu categories={data.categories} />}
         </Container>
       </main>
     </div>

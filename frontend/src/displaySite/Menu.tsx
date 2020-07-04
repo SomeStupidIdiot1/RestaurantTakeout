@@ -1,6 +1,12 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Card, Typography, CardContent, Grid, Button } from "@material-ui/core";
+import {
+  Card,
+  Typography,
+  CardContent,
+  Grid,
+  Button,
+} from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
@@ -15,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginBottom: theme.spacing(2),
+  },
+  img: {
+    maxHeight: 400,
+    width: "100%",
   },
 }));
 type itemType = {
@@ -95,6 +105,11 @@ const Menu = ({ categories }: propType) => {
                   elevation={5}
                   className={classes.root}
                 >
+                  <img
+                    src={item.imgUrl}
+                    alt={item.name}
+                    className={classes.img}
+                  />
                   <CardContent>
                     <Typography
                       className={classes.title}
@@ -104,6 +119,7 @@ const Menu = ({ categories }: propType) => {
                     >
                       {item.name}
                     </Typography>
+
                     <Typography
                       variant="subtitle1"
                       color="textSecondary"
