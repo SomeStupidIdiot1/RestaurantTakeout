@@ -7,7 +7,6 @@ const typeDefs = require("./typeDefs");
 const resolvers = require("./controllers/resolvers");
 const context = require("./controllers/context");
 const { MONGODB_URI, IS_TESTING } = require("./util/config");
-const cors = require("cors");
 const path = require("path");
 
 mongoose.set("useFindAndModify", false);
@@ -35,7 +34,6 @@ if (process.env.NODE_ENV === "development") {
   });
 } else {
   const app = express();
-  app.use(cors());
   app.use(express.json({ limit: "50mb" }));
   server.applyMiddleware({ app, path: "/graphql" });
   app.use(express.static("build"));
