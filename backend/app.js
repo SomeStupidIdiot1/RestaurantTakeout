@@ -27,7 +27,7 @@ const server = new ApolloServer({
   context,
 });
 
-const PORT = process.env.port || 3000;
+const PORT = process.env.PORT || 3000;
 if (process.env.NODE_ENV === "development") {
   server.listen().then(({ url }) => {
     if (!IS_TESTING) console.log(`Server ready at ${url}`);
