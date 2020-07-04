@@ -185,7 +185,7 @@ export default function RegisterForm() {
                 variant="outlined"
                 required
                 fullWidth
-                label="Email Address"
+                label="Email Address (public)"
                 autoFocus
                 type="email"
                 value={registerInfo.email}

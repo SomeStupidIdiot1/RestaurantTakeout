@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { GET_USER } from "../queries";
 import Menu from "./Menu";
+import Contacts from "./Contacts";
 import {
   AppBar,
   Typography,
@@ -140,6 +141,13 @@ const FrontPage = (props: propType) => {
         <div className={classes.spacer} />
         <Container className={classes.container} maxWidth="lg">
           {open === "Menu" && <Menu categories={data.categories} />}
+          {open === "Contacts" && (
+            <Contacts
+              email={data.email}
+              address={data.address}
+              phone={data.phone}
+            />
+          )}
         </Container>
       </main>
     </div>
