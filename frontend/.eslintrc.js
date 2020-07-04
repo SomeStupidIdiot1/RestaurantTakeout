@@ -23,5 +23,6 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
     "@typescript-eslint/no-explicit-any": 1,
     "no-case-declarations": 0,
+    "@typescript-eslint/ban-ts-ignore": "off",
   },
 };
