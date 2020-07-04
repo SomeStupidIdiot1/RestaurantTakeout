@@ -48,35 +48,41 @@ const Menu = ({ categories }: propType) => {
 
       {!items && (
         <Grid container spacing={2}>
-          {categories.map((category) => (
-            <Grid item xs={6} sm={6} md={4} lg={3} key={category.id}>
-              <Card variant="elevation" elevation={5} className={classes.root}>
-                <Button
-                  className={classes.content}
-                  onClick={() => setItems(category.items)}
+          {categories
+            .filter((category) => !!category.items.length)
+            .map((category) => (
+              <Grid item xs={6} sm={6} md={4} lg={3} key={category.id}>
+                <Card
+                  variant="elevation"
+                  elevation={5}
+                  className={classes.root}
                 >
-                  <CardContent>
-                    <Typography
-                      className={classes.title}
-                      color="textPrimary"
-                      variant="h6"
-                      component="h2"
-                    >
-                      {category.name.toUpperCase()}
-                    </Typography>
-                    <Typography
-                      variant="subtitle1"
-                      color="textSecondary"
-                      component="p"
-                      className={classes.desc}
-                    >
-                      {category.desc}
-                    </Typography>
-                  </CardContent>
-                </Button>
-              </Card>
-            </Grid>
-          ))}
+                  <Button
+                    className={classes.content}
+                    onClick={() => setItems(category.items)}
+                  >
+                    <CardContent>
+                      <Typography
+                        className={classes.title}
+                        color="textPrimary"
+                        variant="h6"
+                        component="h2"
+                      >
+                        {category.name.toUpperCase()}
+                      </Typography>
+                      <Typography
+                        variant="subtitle1"
+                        color="textSecondary"
+                        component="p"
+                        className={classes.desc}
+                      >
+                        {category.desc}
+                      </Typography>
+                    </CardContent>
+                  </Button>
+                </Card>
+              </Grid>
+            ))}
         </Grid>
       )}
       {!!items && (
