@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(express.static("build"));
   console.log(`Port is ${PORT}`);
   app.listen(PORT, () => console.log("Server is ready"));
-  app.get("/*", function (_, res) {
+  app.get("/*", (_, res) => {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 }
