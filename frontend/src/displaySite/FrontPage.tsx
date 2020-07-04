@@ -70,7 +70,7 @@ const FrontPage = (props: propType) => {
   const [data, setData] = React.useState<null | dataType>(null);
   React.useEffect(() => {
     if (!user.loading && user.data) {
-      let data = (user.data as { getUser: dataType }).getUser;
+      const data = (user.data as { getUser: dataType }).getUser;
       if (data.facebook && !data.facebook?.match(/^http(s)?:/))
         data.facebook = "https://" + data.facebook;
       if (data.youtube && !data.youtube?.match(/^http(s)?:/))
