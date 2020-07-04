@@ -1,4 +1,7 @@
-const { ApolloServer } = require("apollo-server");
+const express = require("express");
+let ApolloServer = require("apollo-server-express").ApolloServer;
+if (process.env.NODE_ENV !== "production")
+  ApolloServer = require("apollo-server").ApolloServer;
 const mongoose = require("mongoose");
 const typeDefs = require("./typeDefs");
 const resolvers = require("./controllers/resolvers");
@@ -23,7 +26,15 @@ const server = new ApolloServer({
   context,
 });
 
-server.listen().then(({ url }) => {
-  if (!IS_TESTING) console.log(`Server ready at ${url}`);
-});
+const PORT = process.env.port || 3000;
+if (process.env.NODE_ENV === "production") {
+  const app = express();
+  server.applyMiddleware({ app });
+  app.use(express.static("build"));
+  app.listen(PORT, () => console.log("Server is ready"));
+} else {
+  server.listen().then(({ url }) => {
+    if (!IS_TESTING) console.log(`Server ready at ${url}`);
+  });
+}
 module.exports = { server, mongoose };
