@@ -7,6 +7,8 @@ const typeDefs = require("./typeDefs");
 const resolvers = require("./controllers/resolvers");
 const context = require("./controllers/context");
 const { MONGODB_URI, IS_TESTING } = require("./util/config");
+const cors = require("cors");
+const path = require("path");
 
 mongoose.set("useFindAndModify", false);
 mongoose.set("useCreateIndex", true);
@@ -29,8 +31,13 @@ const server = new ApolloServer({
 const PORT = process.env.port || 3000;
 if (process.env.NODE_ENV === "production") {
   const app = express();
-  server.applyMiddleware({ app });
+  app.use(cors());
+  server.applyMiddleware({ app, path: "/graphql" });
   app.use(express.static("build"));
+  app.get("/*", function (req, res) {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
+  });
+
   app.listen(PORT, () => console.log("Server is ready"));
 } else {
   server.listen().then(({ url }) => {

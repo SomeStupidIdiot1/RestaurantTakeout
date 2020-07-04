@@ -19,7 +19,7 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import SettingsIcon from "@material-ui/icons/Settings";
 import MainListItems from "./MainListItems";
 import { GET_ME } from "../../queries";
-import LoginForm from "../LoginForm";
+import RegisterForm from "../RegisterForm";
 import MenuDisplay from "./displays/MenuDisplay";
 import RestaurantInfoDisplay from "./displays/RestaurantInfoDisplay";
 import AddItemDisplay from "./displays/AddItemDisplay";
@@ -177,7 +177,7 @@ export default function Dashboard() {
         </main>
       </div>
     );
-  if (!result.loading && !user) return <LoginForm />;
+  if (!result.loading && !user) return <RegisterForm />;
 
   return <div></div>;
 }

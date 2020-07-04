@@ -11,7 +11,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 // This is for non-production
 // const httpLink = createHttpLink({
 //   uri: `http://localhost:4000`,
-// });
+// }); 
 
 // This is for production
 const httpLink = createHttpLink({
