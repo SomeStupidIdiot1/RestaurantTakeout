@@ -1,7 +1,7 @@
 const express = require("express");
-let ApolloServer = require("apollo-server-express").ApolloServer;
-if (process.env.NODE_ENV !== "production")
-  ApolloServer = require("apollo-server").ApolloServer;
+if (process.env.NODE_ENV === "development")
+  var ApolloServer = require("apollo-server-express").ApolloServer;
+else ApolloServer = require("apollo-server").ApolloServer;
 const mongoose = require("mongoose");
 const typeDefs = require("./typeDefs");
 const resolvers = require("./controllers/resolvers");
@@ -29,7 +29,11 @@ const server = new ApolloServer({
 });
 
 const PORT = process.env.port || 3000;
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "development") {
+  server.listen().then(({ url }) => {
+    if (!IS_TESTING) console.log(`Server ready at ${url}`);
+  });
+} else {
   const app = express();
   app.use(cors());
   app.use(express.json({ limit: "50mb" }));
@@ -40,9 +44,5 @@ if (process.env.NODE_ENV === "production") {
   });
 
   app.listen(PORT, () => console.log("Server is ready"));
-} else {
-  server.listen().then(({ url }) => {
-    if (!IS_TESTING) console.log(`Server ready at ${url}`);
-  });
 }
 module.exports = { server, mongoose };
