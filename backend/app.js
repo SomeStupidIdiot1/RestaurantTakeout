@@ -37,10 +37,10 @@ if (process.env.NODE_ENV === "development") {
   app.use(express.json({ limit: "50mb" }));
   server.applyMiddleware({ app, path: "/graphql" });
   app.use(express.static("build"));
+  console.log(`Port is ${PORT}`);
+  app.listen(PORT, () => console.log("Server is ready"));
   app.get("/*", function (_, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
-  console.log(`Port is ${PORT}`);
-  app.listen(PORT, () => console.log("Server is ready"));
 }
 module.exports = { server, mongoose };
