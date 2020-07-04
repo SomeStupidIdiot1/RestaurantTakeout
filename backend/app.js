@@ -1,7 +1,7 @@
 const express = require("express");
 if (process.env.NODE_ENV === "development")
-  var ApolloServer = require("apollo-server-express").ApolloServer;
-else ApolloServer = require("apollo-server").ApolloServer;
+  var ApolloServer = require("apollo-server").ApolloServer;
+else ApolloServer = require("apollo-server-express").ApolloServer;
 const mongoose = require("mongoose");
 const typeDefs = require("./typeDefs");
 const resolvers = require("./controllers/resolvers");
