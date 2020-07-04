@@ -34,7 +34,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(cors());
   server.applyMiddleware({ app, path: "/graphql" });
   app.use(express.static("build"));
-  app.get("/*", function (req, res) {
+  app.get("/*", function (_, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 
