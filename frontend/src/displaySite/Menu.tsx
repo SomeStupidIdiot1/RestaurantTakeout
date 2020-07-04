@@ -1,12 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Card,
-  Typography,
-  CardContent,
-  Grid,
-  Button,
-} from "@material-ui/core";
+import { Card, Typography, CardContent, Grid, Button } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
@@ -105,11 +99,13 @@ const Menu = ({ categories }: propType) => {
                   elevation={5}
                   className={classes.root}
                 >
-                  <img
-                    src={item.imgUrl}
-                    alt={item.name}
-                    className={classes.img}
-                  />
+                  {item.imgUrl && (
+                    <img
+                      src={item.imgUrl}
+                      alt={item.name}
+                      className={classes.img}
+                    />
+                  )}
                   <CardContent>
                     <Typography
                       className={classes.title}
